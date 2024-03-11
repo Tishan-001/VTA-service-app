@@ -1,0 +1,16 @@
+springbootwebfluxjjwt:
+  jjwt:
+    secret: CHANGE_ME_ENCODER_ABCDEFGHIJKLMNOP
+    expiration: 172800
+  password:
+    encoder:
+      secret: CHANGE_ME_ENCODER_ABCDEFGHIJKLMNOP
+      iteration: 33
+      keylength: 256
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      auto-index-creation: false
+      database: vta

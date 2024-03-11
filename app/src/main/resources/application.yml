@@ -1,0 +1,11 @@
+spring:
+  webflux:
+    base-path: /api
+  profiles:
+    active: "@profileActive@"
+
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/vtaDatabase"
+server:
+  port: 8080
