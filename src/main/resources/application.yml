@@ -1,0 +1,18 @@
+springbootwebfluxjjwt:
+    jjwt:
+      secret: CHANGE_ME_ENCODER_ABCDEFGHIJKLMNOP
+      expiration: 172800
+    password:
+      encoder:
+        secret: CHANGE_ME_ENCODER_ABCDEFGHIJKLMNOP
+        iteration: 33
+        keylength: 256
+spring:
+  webflux:
+    base-path: /api
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/vtaDatabase"
+
+server:
+  port: 8080
