@@ -2,6 +2,8 @@ package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.dto.CreateHotelRequest;
+import com.vta.vtabackend.exceptions.ApiException;
+import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.services.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +20,28 @@ public class HotelController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
-        String result = hotelService.createHotel(request, token);
-        return ResponseEntity.ok(result);
+        try {
+            String result = hotelService.createHotel(request, token);
+            return ResponseEntity.ok(result);
+        } catch (ApiException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<?> getHotels() {
         List<Hotel> hotels = hotelService.getHotels();
         return ResponseEntity.ok(hotels);
+    }
+
+    @GetMapping("/hotel")
+    public ResponseEntity<?> getHotel(@RequestBody String email) {
+        try {
+            Hotel result = hotelService.getHotel(email);
+            return ResponseEntity.ok(result);
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/update")

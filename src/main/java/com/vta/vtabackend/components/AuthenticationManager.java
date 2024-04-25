@@ -1,8 +1,12 @@
 package com.vta.vtabackend.components;
 
 import com.vta.vtabackend.exceptions.ApiException;
+import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.utils.JWTUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,17 +31,24 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
         try {
             if (!jwtUtil.validateToken(authToken)) {
-                return Mono.error(new ApiException("Token is expired or invalid."));
+                return Mono.error(new CustomException("Token is expired or invalid."));
             }
             Claims claims = jwtUtil.getAllClaimsFromToken(authToken);
-            String role = claims.get("role", String.class);
             List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role));
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+            // Assuming role is a single role. If it's multiple roles, you would need to split and add each one.
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role", String.class)));
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     claims.getSubject(), null, authorities);
-            return Mono.just(authenticationToken);
+
+            return Mono.just(auth);
+
+        } catch (ExpiredJwtException e) {
+            return Mono.error(new CustomException("Token is expired. Please log in again."));
+        } catch (UnsupportedJwtException | MalformedJwtException e) {
+            return Mono.error(new CustomException("Token is invalid. Please log in again."));
         } catch (Exception e) {
-            return Mono.error(new ApiException("An error occurred while processing the authentication token."));
+            return Mono.error(new ApiException("An internal error occurred while trying to authenticate."));
         }
     }
 }

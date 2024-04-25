@@ -2,8 +2,10 @@ package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.dto.CreateHotelRequest;
+import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.HotelRepository;
 import com.vta.vtabackend.utils.JWTUtil;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,14 @@ public class HotelService {
 
     public List<Hotel> getHotels() {
         return hotelRepository.findAll();
+    }
+
+    public Hotel getHotel(String email) {
+        boolean exits = hotelRepository.existsByEmail(email);
+        if (!exits) {
+            throw new CustomException("Hotel profile can't bo found");
+        }
+        return hotelRepository.getHotelByEmail(email);
     }
 
     public String updateHotel(CreateHotelRequest request, String token) {
