@@ -8,11 +8,9 @@ springbootwebfluxjjwt:
         iteration: 33
         keylength: 256
 spring:
-  webflux:
-    base-path: /api
   data:
     mongodb:
       uri: "mongodb://localhost:27017/vtaDatabase"
 
 server:
-  port: 8080
+  port: 5000
