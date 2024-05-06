@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tourguides")
+@RequestMapping("tourguides")
 @RequiredArgsConstructor
 public class TourGuideController {
     private final TourGuideService tourGuideService;

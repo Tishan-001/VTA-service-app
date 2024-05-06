@@ -46,7 +46,8 @@ public class WebSecurityConfig {
                         .pathMatchers(
                                 "/auth/**",
                                 "/hotels/**",
-                                "/tourguides/**"
+                                "/tourguides/**",
+                                "/tr"
                         )
                         .permitAll()
                         .anyExchange().authenticated())

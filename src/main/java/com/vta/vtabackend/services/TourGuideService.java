@@ -29,6 +29,7 @@ public class TourGuideService {
             TourGuide tourGuide = TourGuide.builder()
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
+                    .email(request.email())
                     .address(request.address())
                     .mobile(request.mobile())
                     .address(request.address())

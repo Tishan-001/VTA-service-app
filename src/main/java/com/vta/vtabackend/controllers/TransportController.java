@@ -1,6 +1,5 @@
 package com.vta.vtabackend.controllers;
 
-import com.vta.vtabackend.dto.RegisterTourGuideRequest;
 import com.vta.vtabackend.dto.RegisterTransportRequest;
 import com.vta.vtabackend.services.TransportService;
 import jakarta.validation.Valid;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/transport")
+@RequestMapping("transports")
 @RequiredArgsConstructor
 
 public class TransportController {
