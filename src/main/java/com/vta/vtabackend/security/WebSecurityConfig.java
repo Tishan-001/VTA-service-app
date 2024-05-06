@@ -44,7 +44,9 @@ public class WebSecurityConfig {
                         .permitAll()
                         .pathMatchers(HttpMethod.GET).permitAll() // This line makes all GET requests public
                         .pathMatchers(
-                                "/auth/**"
+                                "/auth/**",
+                                "/hotels/**",
+                                "/tourguides/**"
                         )
                         .permitAll()
                         .anyExchange().authenticated())

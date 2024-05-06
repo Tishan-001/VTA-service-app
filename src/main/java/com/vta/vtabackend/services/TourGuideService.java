@@ -56,6 +56,27 @@ public class TourGuideService {
         }
     }
 
+    public String updateTourGuide(RegisterTourGuideRequest request, String token) {
+        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        TourGuide tourGuide = tourGuideRepository.getTourguideByEmail(request.email());
+
+        if (tourGuide == null) {
+            return "Tour guide not found with email: " + request.email();
+        } else if (!Objects.equals(userId, tourGuide.getId())) {
+            return "Unauthorized access: You cannot update this tour guide's details.";
+        } else {
+            tourGuide.setName(request.name() != null ? request.name() : tourGuide.getName());
+            tourGuide.setAddress(request.address() != null ? request.address() : tourGuide.getAddress());
+            tourGuide.setMobile(request.mobile() != null ? request.mobile() : tourGuide.getMobile());
+            tourGuide.setPrice(request.price() != null ? request.price() : tourGuide.getPrice());
+            tourGuide.setStarRating(request.starRating() != null ? request.starRating() : tourGuide.getStarRating());
+            tourGuide.setDescription(request.description() != null ? request.description() : tourGuide.getDescription());
+
+            tourGuideRepository.save(tourGuide);
+            return "Tour guide updated successfully.";
+        }
+    }
+
     public String deleteTourGuide(String email, String token) {
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exists = tourGuideRepository.existsByEmail(email);
