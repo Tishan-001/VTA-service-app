@@ -1,8 +1,6 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.TourGuide;
-import com.vta.vtabackend.dto.AuthResponse;
-import com.vta.vtabackend.dto.LoginWithEmailRequest;
 import com.vta.vtabackend.dto.RegisterTourGuideRequest;
 import com.vta.vtabackend.enums.Role;
 import com.vta.vtabackend.exceptions.CustomException;
