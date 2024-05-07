@@ -6,21 +6,18 @@ import com.vta.vtabackend.services.TransportService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/transport")
 @RequiredArgsConstructor
-
 public class TransportController {
-    private TransportService transport;
+    private final TransportService transportService;
 
     @PostMapping("/register")
     public ResponseEntity<String> saveTransportDetails(@RequestBody @Valid RegisterTransportRequest request) {
-        String result = transport.saveTransportationDetails(request);
+        String result = transportService.saveTransportationDetails(request);
         return ResponseEntity.ok(result);
     }
 }
+

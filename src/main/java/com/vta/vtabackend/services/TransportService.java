@@ -9,11 +9,15 @@ import com.vta.vtabackend.enums.Role;
 import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.TransportRepository;
 import com.vta.vtabackend.utils.JWTUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Service
+@RequiredArgsConstructor
 public class TransportService {
     private TransportRepository transportRepository;
     private PBKDF2Encoder passwordEncoder;

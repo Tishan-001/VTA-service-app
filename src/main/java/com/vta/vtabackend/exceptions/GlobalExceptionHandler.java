@@ -9,24 +9,24 @@ import com.vta.vtabackend.response.ErrorResponse;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ApiException exc) {
+    // Handler for specific custom API exceptions
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResponse> handleApiException(ApiException exc) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 exc.getMessage(),
                 System.currentTimeMillis());
-
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // Generic exception handler
-    @ExceptionHandler
+    // Generic exception handler for all other exceptions
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception exc) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "An unexpected error occurred.",
+                "An unexpected error occurred: " + exc.getMessage(), // Include the message for better clarity
                 System.currentTimeMillis());
-
+        exc.printStackTrace(); // Log the stack trace for debugging
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
