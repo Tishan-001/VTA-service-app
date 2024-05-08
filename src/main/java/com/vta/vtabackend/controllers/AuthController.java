@@ -53,7 +53,7 @@ public class AuthController {
     private ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
         try {
             AuthResponse result = authService.loginWithEmail(request);
-            return ResponseEntity.ok(Map.of("message", result));
+            return ResponseEntity.ok(Map.of("token", result.token()));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -63,7 +63,7 @@ public class AuthController {
     private ResponseEntity<?> adminlogin(@RequestBody @Valid LoginWithEmailRequest request) {
         try {
             AuthResponse result = authService.adminlogin(request);
-            return ResponseEntity.ok(Map.of("message", result));
+            return ResponseEntity.ok(Map.of("token", result.token()));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
