@@ -19,9 +19,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TransportService {
-    private TransportRepository transportRepository;
-    private PBKDF2Encoder passwordEncoder;
-    private JWTUtil jwtUtil;
+    private final TransportRepository transportRepository;
+    private final PBKDF2Encoder passwordEncoder;
+    private final JWTUtil jwtUtil;
 
     public String saveTransportationDetails(RegisterTransportRequest request){
         boolean exists = transportRepository.existsByEmail(request.email());
@@ -46,12 +46,37 @@ public class TransportService {
         }
     }
     public List<Transport> getTransports() {return transportRepository.findAll();}
+
     public Transport getTransport(String email){
         boolean exists= transportRepository.existsByEmail(email);
         if(!exists){
             throw new CustomException("Email does not exists");
         }else{
             return transportRepository.getTransportationByEmail(email);
+        }
+
+    }
+
+    public String updateTransport(RegisterTransportRequest request, String token)
+    {
+        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        Transport transport = transportRepository.getTransportationByEmail(request.email());
+
+        if(transport==null){
+            return "Transport not found by email: "+ request.email();
+        }else if(!Objects.equals(userId, transport.getId())){
+            return "Unauthorized access: You can not upadate this trasportaion detail.";
+        }else {
+            transport.setName(request.name() != null ? request.name() : transport.getName());
+            transport.setMobile(request.mobile() != null ? request.mobile() : transport.getName());
+            transport.setAddress(request.address() != null ? request.address() : transport.getAddress());
+            transport.setPrice(request.price()!= null ? request.price() : transport.getPrice());
+            transport.setFeatures(request.features() != null ? request.features() : transport.getFeatures());
+            transport.setVehicleCategory(request.vehicleCategory() != null ? request.vehicleCategory() : transport.getVehicleCategory());
+            transport.setPassword(request.password()!= null ? request.password() : transport.getPassword());
+
+            transportRepository.save(transport);
+            return "Tour guide updated successfully.";
         }
 
     }
