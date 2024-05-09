@@ -1,5 +1,6 @@
 package com.vta.vtabackend.utils;
 
+import com.vta.vtabackend.documents.Transport;
 import com.vta.vtabackend.documents.UserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -55,6 +56,13 @@ public class JWTUtil {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole());
         return doGenerateToken(claims, user.getId());
+    }
+
+    // Generate Token for Micro services
+    public String generateTokenForTransport(Transport transport){
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("role",transport.getRole());
+        return doGenerateToken(claims, transport.getId());
     }
 
     private String doGenerateToken(Map<String, Object> claims, String userId) {

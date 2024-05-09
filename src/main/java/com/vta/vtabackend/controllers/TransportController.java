@@ -1,6 +1,8 @@
 package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.Transport;
+import com.vta.vtabackend.dto.AuthResponse;
+import com.vta.vtabackend.dto.LoginWithEmailRequest;
 import com.vta.vtabackend.dto.RegisterTourGuideRequest;
 import com.vta.vtabackend.dto.RegisterTransportRequest;
 import com.vta.vtabackend.exceptions.CustomException;
@@ -25,6 +27,16 @@ public class TransportController {
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> loginAsTransport(@RequestBody @Valid LoginWithEmailRequest request){
+        try{
+            AuthResponse authResponse = transportService.loginWithEmail(request);
+            return ResponseEntity.ok(authResponse);
+        }catch(CustomException exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
     @GetMapping("/")
     public ResponseEntity<?> getTransportaions(){
         List<Transport> transports = transportService.getTransports();
@@ -41,7 +53,7 @@ public class TransportController {
         }
 
     }
-    @GetMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateTransport(@Valid @RequestBody RegisterTransportRequest request, @RequestHeader("Authorization") String token) {
         String result = transportService.updateTransport(request, token);
         return ResponseEntity.ok(result);
@@ -49,8 +61,8 @@ public class TransportController {
 
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteTourGuide(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String result = transportService.deleteTransport(email, token);
+    public ResponseEntity<?> deleteTourGuide(@RequestBody EmailRequest emailRequest, @RequestHeader("Authorization") String token) {
+        String result = transportService.deleteTransport(emailRequest.getEmail(), token);
         return ResponseEntity.ok(result);
     }
 }
