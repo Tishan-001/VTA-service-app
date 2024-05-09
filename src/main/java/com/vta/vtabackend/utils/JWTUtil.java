@@ -1,5 +1,6 @@
 package com.vta.vtabackend.utils;
 
+import com.vta.vtabackend.documents.TourGuide;
 import com.vta.vtabackend.documents.Transport;
 import com.vta.vtabackend.documents.UserDetails;
 import io.jsonwebtoken.Claims;
@@ -64,7 +65,11 @@ public class JWTUtil {
         claims.put("role",transport.getRole());
         return doGenerateToken(claims, transport.getId());
     }
-
+    public String generateTokenForTourgide(TourGuide tourGuide){
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("role",tourGuide.getRole());
+        return doGenerateToken(claims, tourGuide.getId());
+    }
     private String doGenerateToken(Map<String, Object> claims, String userId) {
         long expirationTimeLong = Long.parseLong(expirationTime); //in second
 

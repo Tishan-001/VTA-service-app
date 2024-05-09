@@ -1,8 +1,13 @@
 package com.vta.vtabackend.services;
 
+import com.vta.vtabackend.components.PBKDF2Encoder;
 import com.vta.vtabackend.documents.TourGuide;
+import com.vta.vtabackend.documents.Transport;
+import com.vta.vtabackend.dto.AuthResponse;
+import com.vta.vtabackend.dto.LoginWithEmailRequest;
 import com.vta.vtabackend.dto.RegisterTourGuideRequest;
 import com.vta.vtabackend.enums.Role;
+import com.vta.vtabackend.exceptions.ApiException;
 import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.TourGuideRepository;
 import com.vta.vtabackend.utils.JWTUtil;
@@ -18,6 +23,7 @@ import java.util.UUID;
 public class TourGuideService {
     private final TourGuideRepository tourGuideRepository;
     private final JWTUtil jwtUtil;
+    private final PBKDF2Encoder passwordEncoder;
 
     public String saveTourGuide(RegisterTourGuideRequest request){
         boolean exists = tourGuideRepository.existsByEmail(request.email());
@@ -28,6 +34,7 @@ public class TourGuideService {
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
                     .email(request.email())
+                    .password(passwordEncoder.encode(request.password()))
                     .address(request.address())
                     .mobile(request.mobile())
                     .address(request.address())
@@ -41,6 +48,20 @@ public class TourGuideService {
 
             return "Your Details Successfully saved";
         }
+    }
+
+    public AuthResponse loginWithEmail(LoginWithEmailRequest request) throws ApiException {
+        TourGuide tourGuide = tourGuideRepository.getTourguideByEmail(request.email());
+        if (tourGuide==null){
+                new CustomException("User not found with email : "+request.email());
+        } else if (!passwordEncoder.matches(request.password(), tourGuide.getPassword())){
+            throw new CustomException("Incorrect password");
+        }
+//        if (!transport.isVerified()) {
+//            throw new CustomException("User not verified: " + request.email());
+//        }
+        return new AuthResponse(jwtUtil.generateTokenForTourgide(tourGuide));
+
     }
 
     public List<TourGuide> getTourGuides() {return tourGuideRepository.findAll();}
@@ -67,6 +88,7 @@ public class TourGuideService {
             tourGuide.setName(request.name() != null ? request.name() : tourGuide.getName());
             tourGuide.setAddress(request.address() != null ? request.address() : tourGuide.getAddress());
             tourGuide.setMobile(request.mobile() != null ? request.mobile() : tourGuide.getMobile());
+            tourGuide.setPassword(passwordEncoder.encode(request.password() != null ? request.password() : tourGuide.getPassword()));
             tourGuide.setPrice(request.price() != null ? request.price() : tourGuide.getPrice());
             tourGuide.setStarRating(request.starRating() != null ? request.starRating() : tourGuide.getStarRating());
             tourGuide.setDescription(request.description() != null ? request.description() : tourGuide.getDescription());
@@ -79,10 +101,10 @@ public class TourGuideService {
     public String deleteTourGuide(String email, String token) {
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exists = tourGuideRepository.existsByEmail(email);
-
+        TourGuide tourGuide = tourGuideRepository.getTourguideByEmail(email);
         if (exists) {
-            if(Objects.equals(userId, tourGuideRepository.getTourguideByEmail(email).getId())) {
-                tourGuideRepository.deleteById(email);
+            if(Objects.equals(userId, tourGuide.getId())) {
+                tourGuideRepository.deleteById(tourGuide.getId());
                 return "Successfully deleted tour guide";
             } else {
                 return "You can't delete this tour guide";
