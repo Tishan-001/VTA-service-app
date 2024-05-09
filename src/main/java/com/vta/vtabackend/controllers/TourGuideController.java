@@ -50,10 +50,4 @@ public class TourGuideController {
         String result = tourGuideService.deleteTourGuide(email, token);
         return ResponseEntity.ok(result);
     }
-
-    @GetMapping("/count")
-    public ResponseEntity<?> countTourGuide() {
-        String response = tourGuideService.getTourGuidesCount();
-        return ResponseEntity.ok(response);
-    }
 }

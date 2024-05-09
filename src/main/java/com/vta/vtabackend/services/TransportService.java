@@ -81,7 +81,7 @@ public class TransportService {
             transport.setPrice(request.price()!= null ? request.price() : transport.getPrice());
             transport.setFeatures(request.features() != null ? request.features() : transport.getFeatures());
             transport.setVehicleCategory(request.vehicleCategory() != null ? request.vehicleCategory() : transport.getVehicleCategory());
-            transport.setPassword(request.password()!= null ? request.password() : transport.getPassword());
+            transport.setPassword(passwordEncoder.encode(request.password() != null ? request.password() : transport.getPassword()));
 
             transportRepository.save(transport);
             return "Tour guide updated successfully.";
