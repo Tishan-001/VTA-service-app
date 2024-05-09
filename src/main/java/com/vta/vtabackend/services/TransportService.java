@@ -4,8 +4,11 @@ import com.vta.vtabackend.components.PBKDF2Encoder;
 import com.vta.vtabackend.components.SecurityContextRepository;
 import com.vta.vtabackend.documents.Transport;
 import com.vta.vtabackend.documents.UserVerificationCode;
+import com.vta.vtabackend.dto.AuthResponse;
+import com.vta.vtabackend.dto.LoginWithEmailRequest;
 import com.vta.vtabackend.dto.RegisterTransportRequest;
 import com.vta.vtabackend.enums.Role;
+import com.vta.vtabackend.exceptions.ApiException;
 import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.TransportRepository;
 import com.vta.vtabackend.utils.JWTUtil;
@@ -45,26 +48,31 @@ public class TransportService {
             return "Your details successfully saved!";
         }
     }
+    public AuthResponse loginWithEmail(LoginWithEmailRequest request) throws ApiException {
+        Transport transport = transportRepository.getTransportationByEmail(request.email()).orElseThrow(() ->
+                new CustomException("User not found with email : "+request.email()));
+        if(!passwordEncoder.matches(request.password(), transport.getPassword())){
+            throw new CustomException("Incorrect password");
+        }
+//        if (!transport.isVerified()) {
+//            throw new CustomException("User not verified: " + request.email());
+//        }
+        return new AuthResponse(jwtUtil.generateTokenForTransport(transport));
+
+    }
     public List<Transport> getTransports() {return transportRepository.findAll();}
 
     public Transport getTransport(String email){
-        boolean exists= transportRepository.existsByEmail(email);
-        if(!exists){
-            throw new CustomException("Email does not exists");
-        }else{
-            return transportRepository.getTransportationByEmail(email);
-        }
-
+        return transportRepository.getTransportationByEmail(email).orElseThrow(()->
+                new CustomException("Email does not exists"));
     }
 
     public String updateTransport(RegisterTransportRequest request, String token)
     {
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
-        Transport transport = transportRepository.getTransportationByEmail(request.email());
-
-        if(transport==null){
-            return "Transport not found by email: "+ request.email();
-        }else if(!Objects.equals(userId, transport.getId())){
+        Transport transport = transportRepository.getTransportationByEmail(request.email()).orElseThrow(()->
+                new CustomException("Transport not found by email: "+ request.email()));
+        if(!Objects.equals(userId, transport.getId())){
             return "Unauthorized access: You can not upadate this trasportaion detail.";
         }else {
             transport.setName(request.name() != null ? request.name() : transport.getName());
@@ -84,16 +92,14 @@ public class TransportService {
     public String deleteTransport(String email,String token){
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exists = transportRepository.existsByEmail(email);
-
-        if (exists) {
-            if(Objects.equals(userId, transportRepository.getTransportationByEmail(email).getId())) {
-                transportRepository.deleteById(email);
-                return "Successfully deleted transport";
-            } else {
-                return "You can't delete this transport";
-            }
+        Transport transport= transportRepository.getTransportationByEmail(email).orElseThrow(()->
+                new CustomException("Transportation does not exist"));
+        if(Objects.equals(userId, transport.getId())) {
+            transportRepository.deleteById(transport.getId());
+            return "Successfully deleted transport";
         } else {
-            return "Tour Guide does not exist";
+            return "You can't delete this transport";
         }
+
     }
 }
