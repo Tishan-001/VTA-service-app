@@ -33,7 +33,7 @@ public class AuthController {
     private ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
         try {
             AuthResponse response = authService.verifyEmailOtp(request.source(), request.otp());
-            return ResponseEntity.ok(Map.of("message", response));
+            return ResponseEntity.ok(Map.of("token", response.token()));
         } catch(CustomException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

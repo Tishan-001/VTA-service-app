@@ -5,7 +5,6 @@ import com.vta.vtabackend.dto.CreateHotelRequest;
 import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.HotelRepository;
 import com.vta.vtabackend.utils.JWTUtil;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +29,8 @@ public class HotelService {
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
                     .address(request.address())
-                    .district(request.district())
-                    .country(request.country())
+                    .city(request.city())
+                    .photo(request.photo())
                     .hotline(request.hotline())
                     .mobile(request.mobileNo())
                     .email(request.email())
@@ -40,6 +39,8 @@ public class HotelService {
                     .description(request.description())
                     .facilities(request.facilities())
                     .starRating(request.starRating())
+                    .media(request.media())
+                    .rooms(request.rooms())
                     .pricePerNight(request.pricePerNight())
                     .userId(userId)
                     .build();
@@ -69,8 +70,8 @@ public class HotelService {
             if(Objects.equals(userId, hotel.getUserId())) {
                 hotel.setName(request.name());
                 hotel.setAddress(request.address());
-                hotel.setDistrict(request.district());
-                hotel.setCountry(request.country());
+                hotel.setCity(request.city());
+                hotel.setPhoto(request.photo());
                 hotel.setHotline(request.hotline());
                 hotel.setMobile(request.mobileNo());
                 hotel.setEmail(request.email());
@@ -78,6 +79,8 @@ public class HotelService {
                 hotel.setType(request.type());
                 hotel.setDescription(request.description());
                 hotel.setFacilities(request.facilities());
+                hotel.setMedia(request.media());
+                hotel.setRooms(request.rooms());
                 hotel.setStarRating(request.starRating());
                 hotel.setPricePerNight(request.pricePerNight());
                 hotelRepository.save(hotel);
