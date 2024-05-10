@@ -29,7 +29,9 @@ public class TourGuideService {
                     .name(request.name())
                     .email(request.email())
                     .address(request.address())
+                    .password(request.password())
                     .mobile(request.mobile())
+                    .media(request.media())
                     .address(request.address())
                     .role(Role.SERVICE_PROVIDER)
                     .price(request.price())
@@ -45,13 +47,13 @@ public class TourGuideService {
 
     public List<TourGuide> getTourGuides() {return tourGuideRepository.findAll();}
 
-    public TourGuide getTourguide(String email) {
-        boolean exists = tourGuideRepository.existsByEmail(email);
+    public TourGuide getTourguide(String id) {
+        boolean exists = tourGuideRepository.existsById(id);
 
         if (!exists) {
-            throw new CustomException("Email does not exist");
+            throw new CustomException("This id does not exist");
         } else {
-            return tourGuideRepository.getTourguideByEmail(email);
+            return tourGuideRepository.getTourguideById(id);
         }
     }
 
@@ -68,6 +70,7 @@ public class TourGuideService {
             tourGuide.setAddress(request.address() != null ? request.address() : tourGuide.getAddress());
             tourGuide.setMobile(request.mobile() != null ? request.mobile() : tourGuide.getMobile());
             tourGuide.setPrice(request.price() != null ? request.price() : tourGuide.getPrice());
+            tourGuide.setMedia(request.media() != null ? request.media() : tourGuide.getMedia());
             tourGuide.setStarRating(request.starRating() != null ? request.starRating() : tourGuide.getStarRating());
             tourGuide.setDescription(request.description() != null ? request.description() : tourGuide.getDescription());
 

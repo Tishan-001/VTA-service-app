@@ -29,10 +29,10 @@ public class TourGuideController {
         return ResponseEntity.ok(tourGuides);
     }
 
-    @GetMapping("/tourguide")
-    public ResponseEntity<?> getTourGuide(@RequestBody String email) {
+    @GetMapping("/tourguide/{id}")
+    public ResponseEntity<?> getTourGuide(@PathVariable String id) {
         try {
-            TourGuide tourGuide = tourGuideService.getTourguide(email);
+            TourGuide tourGuide = tourGuideService.getTourguide(id);
                 return ResponseEntity.ok(tourGuide);
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
