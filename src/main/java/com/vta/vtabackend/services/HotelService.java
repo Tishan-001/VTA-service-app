@@ -23,7 +23,7 @@ public class HotelService {
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exits = hotelRepository.existsByEmail(request.email());
         if(exits) {
-            return  "Hotel already registered";
+            return  "Hotel already registered using this email";
         }
         else {
             Hotel hotel = Hotel.builder()
