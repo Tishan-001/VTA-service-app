@@ -33,7 +33,7 @@ public class TourGuideService {
                     .mobile(request.mobile())
                     .media(request.media())
                     .address(request.address())
-                    .role(Role.SERVICE_PROVIDER)
+                    .role(Role.TOURGUIDE)
                     .price(request.price())
                     .starRating(request.starRating())
                     .description(request.description())
@@ -94,5 +94,8 @@ public class TourGuideService {
             return "Tour Guide does not exist";
         }
     }
-    
+
+    public String getTourGuidesCount() {
+        return String.valueOf(tourGuideRepository.count());
+    }
 }

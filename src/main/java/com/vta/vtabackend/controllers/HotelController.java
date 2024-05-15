@@ -19,9 +19,9 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request) {
         try {
-            String result = hotelService.createHotel(request, token);
+            String result = hotelService.createHotel(request);
             return ResponseEntity.ok(result);
         } catch (ApiException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -54,5 +54,11 @@ public class HotelController {
     public ResponseEntity<?> deleteHotel(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
         String response = hotelService.deleteHotel(email, token);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getHotelCount() {
+        String count = hotelService.getHotelCount();
+        return ResponseEntity.ok(count);
     }
 }

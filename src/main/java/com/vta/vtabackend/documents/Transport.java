@@ -29,7 +29,7 @@ public class Transport {
     private String description;
     private VehicleCategory vehicleCategory;
     private String userId;
-    private static final Role role = Role.SERVICE_PROVIDER;
+    private static final Role role = Role.TRANSPORT;
     private boolean verified;
 
 }

@@ -18,8 +18,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final JWTUtil jwtUtil;
 
-    public String createHotel(CreateHotelRequest request, String token) {
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+    public String createHotel(CreateHotelRequest request) {
         boolean exits = hotelRepository.existsByEmail(request.email());
         if(exits) {
             return  "Hotel already registered";
@@ -42,7 +41,6 @@ public class HotelService {
                     .media(request.media())
                     .rooms(request.rooms())
                     .pricePerNight(request.pricePerNight())
-                    .userId(userId)
                     .build();
             hotelRepository.save(hotel);
             return "Hotel profile create successfully";
@@ -107,5 +105,9 @@ public class HotelService {
         } else {
             return "Hotel profile can't bo found";
         }
+    }
+
+    public String getHotelCount() {
+        return String.valueOf(hotelRepository.count());
     }
 }
