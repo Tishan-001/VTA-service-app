@@ -19,9 +19,9 @@ public class HotelController {
     private final HotelService hotelService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request) {
+    public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
         try {
-            String result = hotelService.createHotel(request);
+            String result = hotelService.createHotel(request, token);
             return ResponseEntity.ok(result);
         } catch (ApiException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
