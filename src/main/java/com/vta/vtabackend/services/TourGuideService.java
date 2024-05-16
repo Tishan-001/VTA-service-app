@@ -36,9 +36,11 @@ public class TourGuideService {
                     .email(request.email())
                     .password(passwordEncoder.encode(request.password()))
                     .address(request.address())
+                    .password(request.password())
                     .mobile(request.mobile())
+                    .media(request.media())
                     .address(request.address())
-                    .role(Role.SERVICE_PROVIDER)
+                    .role(Role.TOURGUIDE)
                     .price(request.price())
                     .starRating(request.starRating())
                     .description(request.description())
@@ -66,13 +68,13 @@ public class TourGuideService {
 
     public List<TourGuide> getTourGuides() {return tourGuideRepository.findAll();}
 
-    public TourGuide getTourguide(String email) {
-        boolean exists = tourGuideRepository.existsByEmail(email);
+    public TourGuide getTourguide(String id) {
+        boolean exists = tourGuideRepository.existsById(id);
 
         if (!exists) {
-            throw new CustomException("Email does not exist");
+            throw new CustomException("This id does not exist");
         } else {
-            return tourGuideRepository.getTourguideByEmail(email);
+            return tourGuideRepository.getTourguideById(id);
         }
     }
 
@@ -90,6 +92,7 @@ public class TourGuideService {
             tourGuide.setMobile(request.mobile() != null ? request.mobile() : tourGuide.getMobile());
             tourGuide.setPassword(passwordEncoder.encode(request.password() != null ? request.password() : tourGuide.getPassword()));
             tourGuide.setPrice(request.price() != null ? request.price() : tourGuide.getPrice());
+            tourGuide.setMedia(request.media() != null ? request.media() : tourGuide.getMedia());
             tourGuide.setStarRating(request.starRating() != null ? request.starRating() : tourGuide.getStarRating());
             tourGuide.setDescription(request.description() != null ? request.description() : tourGuide.getDescription());
 
@@ -113,5 +116,8 @@ public class TourGuideService {
             return "Tour Guide does not exist";
         }
     }
-    
+
+    public String getTourGuidesCount() {
+        return String.valueOf(tourGuideRepository.count());
+    }
 }

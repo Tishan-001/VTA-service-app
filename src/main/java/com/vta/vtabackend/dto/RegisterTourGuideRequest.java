@@ -9,6 +9,7 @@ public record RegisterTourGuideRequest(@NotNull String name,
                                        @NotNull String password,
                                        @NotNull String address,
                                        @NotNull String price,
+                                       String media,
                                        @NotNull Integer starRating,
                                        @NotNull String description) {
 }

@@ -47,7 +47,8 @@ public class WebSecurityConfig {
                                 "/auth/**",
                                 "/hotels/**",
                                 "/tourguides/**",
-                                "/transports/**"
+                                "/transports/**",
+                                "/images/**"
                         )
                         .permitAll()
                         .anyExchange().authenticated())

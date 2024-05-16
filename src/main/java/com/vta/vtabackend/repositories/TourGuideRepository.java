@@ -9,4 +9,6 @@ public interface TourGuideRepository extends MongoRepository<TourGuide, String> 
     boolean existsByEmail(String email);
 
     TourGuide getTourguideByEmail(String email);
+
+    TourGuide getTourguideById(String id);
 }
