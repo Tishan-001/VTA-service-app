@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,7 +36,7 @@ public class AuthService {
         if (exists) {
             throw new CustomException("Email already exists: " + request.getEmail());
         } else {
-            UserVerificationCode verificationCode = saveUserDetails(request.getEmail(), null, request.getName(), request.getPassword());
+            UserVerificationCode verificationCode = saveUserDetails(request.getEmail(), null, request.getName(), request.getPassword(), request.getRole());
 
             mailService.sendOtp(verificationCode.getCode(), request.getEmail());
 
@@ -43,13 +44,14 @@ public class AuthService {
         }
     }
 
-    private UserVerificationCode saveUserDetails(String email, String mobile, String name, String password) {
+    private UserVerificationCode saveUserDetails(String email, String mobile, String name, String password, Role
+                                                 role) throws CustomException {
         UserDetails user = UserDetails.builder()
                 .id(UUID.randomUUID().toString())
                 .name(name)
                 .email(email)
                 .mobile(mobile)
-                .role(Role.USER)
+                .role(role)
                 .password(passwordEncoder.encode(password))
                 .build();
         userRepository.save(user);
@@ -127,6 +129,12 @@ public class AuthService {
             throw new CustomException("Your are not a admin user");
         }
         return new AuthResponse(jwtUtil.generateToken(userDetails));
+    }
+
+    public String getCount() {
+        List<UserDetails> users = userRepository.findAll();
+        long count = users.stream().filter(user -> user.getRole() == Role.USER).count();
+        return Long.toString(count);
     }
 
 }

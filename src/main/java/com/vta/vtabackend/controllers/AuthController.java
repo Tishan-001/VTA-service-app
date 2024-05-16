@@ -6,10 +6,9 @@ import com.vta.vtabackend.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("auth")
@@ -18,12 +17,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register/email")
-    public ResponseEntity<String> registerWithEmail(@RequestBody @Valid RegisterWithEmailRequest request) {
+    public ResponseEntity<?> registerWithEmail(@RequestBody @Valid RegisterWithEmailRequest request) {
         try {
             String result = authService.registerWithEmail(request);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(Map.of("message", result));
         } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -31,19 +30,19 @@ public class AuthController {
     private ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
         try {
             AuthResponse response = authService.verifyEmailOtp(request.source(), request.otp());
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("token", response.token()));
         } catch(CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
     @PostMapping("/getcode")
-    private ResponseEntity<String> getVerifyCode(@RequestBody @Valid OTPRequest request) {
+    private ResponseEntity<?> getVerifyCode(@RequestBody @Valid OTPRequest request) {
         try {
             String result = authService.getVerifyCode(request);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(Map.of("message", result));
         } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -51,9 +50,9 @@ public class AuthController {
     private ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
         try {
             AuthResponse result = authService.loginWithEmail(request);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(Map.of("token", result.token()));
         } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -61,9 +60,15 @@ public class AuthController {
     private ResponseEntity<?> adminlogin(@RequestBody @Valid LoginWithEmailRequest request) {
         try {
             AuthResponse result = authService.adminlogin(request);
-            return ResponseEntity.ok(result);
+            return ResponseEntity.ok(Map.of("token", result.token()));
         } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
+    }
+
+    @GetMapping("/count")
+    private ResponseEntity<String> count() {
+        String count = authService.getCount();
+        return ResponseEntity.ok(count);
     }
 }

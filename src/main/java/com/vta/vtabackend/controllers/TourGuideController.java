@@ -41,10 +41,11 @@ public class TourGuideController {
         return ResponseEntity.ok(tourGuides);
     }
 
-    @GetMapping("/tourguide")
-    public ResponseEntity<?> getTourGuide(@RequestBody EmailRequest emailRequest) {
+
+    @GetMapping("/tourguide/{id}")
+    public ResponseEntity<?> getTourGuide(@PathVariable String id) {
         try {
-            TourGuide tourGuide = tourGuideService.getTourguide(emailRequest.getEmail());
+            TourGuide tourGuide = tourGuideService.getTourguide(id);
                 return ResponseEntity.ok(tourGuide);
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -61,5 +62,11 @@ public class TourGuideController {
     public ResponseEntity<?> deleteTourGuide(@RequestBody EmailRequest emailRequest, @RequestHeader("Authorization") String token) {
         String result = tourGuideService.deleteTourGuide(emailRequest.getEmail(), token);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> countTourGuide() {
+        String response = tourGuideService.getTourGuidesCount();
+        return ResponseEntity.ok(response);
     }
 }

@@ -55,4 +55,10 @@ public class HotelController {
         String response = hotelService.deleteHotel(email, token);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getHotelCount() {
+        String count = hotelService.getHotelCount();
+        return ResponseEntity.ok(count);
+    }
 }
