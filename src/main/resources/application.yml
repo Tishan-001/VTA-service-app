@@ -10,7 +10,7 @@ springbootwebfluxjjwt:
 spring:
   data:
     mongodb:
-      uri: "mongodb://localhost:27017/vtaDatabase"
+      uri: "mongodb+srv://virtualtravelassistance:6PaQ97vi0uYkV7TG@vta.i7fwmes.mongodb.net/vtaDatabase?retryWrites=true&w=majority&appName=VTA"
 
 server:
   port: 5000
