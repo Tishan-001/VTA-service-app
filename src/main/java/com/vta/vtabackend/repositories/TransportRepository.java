@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TransportRepository extends MongoRepository<Transport,String> {
     boolean existsByEmail(String email);
-
     Transport getTransportationByEmail(String email);
+    Transport getTransportationById(String id);
 }

@@ -23,7 +23,8 @@ public class TransportService {
     private PBKDF2Encoder passwordEncoder;
     private JWTUtil jwtUtil;
 
-    public String saveTransportationDetails(RegisterTransportRequest request){
+    public String saveTransportationDetails(RegisterTransportRequest request, String token){
+        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exists = transportRepository.existsByEmail(request.email());
         if(exists){
             return "Email already exists";
@@ -38,20 +39,22 @@ public class TransportService {
                     .price(request.price())
                     .address(request.address())
                     .description(request.description())
-                    .password(passwordEncoder.encode(request.password()))
+                    .userId(userId)
                     .build();
             transportRepository.save(transport);
 
             return "Your details successfully saved!";
         }
     }
+
     public List<Transport> getTransports() {return transportRepository.findAll();}
-    public Transport getTransport(String email){
-        boolean exists= transportRepository.existsByEmail(email);
+
+    public Transport getTransport(String id){
+        boolean exists= transportRepository.existsById(id);
         if(!exists){
             throw new CustomException("Email does not exists");
         }else{
-            return transportRepository.getTransportationByEmail(email);
+            return transportRepository.getTransportationById(id);
         }
 
     }
