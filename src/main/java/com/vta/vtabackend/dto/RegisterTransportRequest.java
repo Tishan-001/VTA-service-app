@@ -8,7 +8,6 @@ import java.util.List;
 
 public record RegisterTransportRequest(
         @NotNull String name,
-        @NotNull String password,
         @NotNull @Email String email,
         @NotNull String mobile,
         @NotNull String address,
