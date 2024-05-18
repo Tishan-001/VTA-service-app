@@ -39,5 +39,6 @@ public class Hotel {
         private String photo;
         private String price;
         private int bedCount;
+        private Boolean isAvailable = true;
     }
 }

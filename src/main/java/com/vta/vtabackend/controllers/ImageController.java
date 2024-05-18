@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/images")
+@RequestMapping("images")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -36,6 +36,12 @@ public class ImageController {
     @PostMapping("/upload")
     @ResponseBody
     public ResponseEntity<String> upload(@RequestParam("image") MultipartFile multipartFile) throws IOException {
+        if (multipartFile == null) {
+            System.out.println("No file received!");
+            return new ResponseEntity<>("No file received", HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("Received file: " + multipartFile.getOriginalFilename());
+
         BufferedImage bi = ImageIO.read(multipartFile.getInputStream());
         if (bi == null) {
             return new ResponseEntity<>("Image non valide!", HttpStatus.BAD_REQUEST);
