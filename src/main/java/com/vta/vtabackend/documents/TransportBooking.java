@@ -19,7 +19,7 @@ public class TransportBooking {
         private String bookingStartDate;
         private String bookingEndDate;
         private String bookingPrice;
-        private BookingType bookingType;
+        private final BookingType bookingType = BookingType.Transport;
         private String serviceProviderEmail;
 
 }

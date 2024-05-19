@@ -59,7 +59,6 @@ public class TransportBookingService {
                 .bookingStartDate(request.bookingStartDate())
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
-                .bookingType(request.bookingType())
                 .serviceProviderEmail(request.serviceProviderEmail())
                 .build();
     }
