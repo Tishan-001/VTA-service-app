@@ -62,7 +62,7 @@ public class TourGuideService {
 //        if (!transport.isVerified()) {
 //            throw new CustomException("User not verified: " + request.email());
 //        }
-        return new AuthResponse(jwtUtil.generateTokenForTourgide(tourGuide));
+        return new AuthResponse(jwtUtil.generateTokenForTourGuide(tourGuide));
 
     }
 

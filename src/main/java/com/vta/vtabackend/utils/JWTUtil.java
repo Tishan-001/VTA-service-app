@@ -65,7 +65,7 @@ public class JWTUtil {
         claims.put("role",transport.getRole());
         return doGenerateToken(claims, transport.getId());
     }
-    public String generateTokenForTourgide(TourGuide tourGuide){
+    public String generateTokenForTourGuide(TourGuide tourGuide){
         Map<String,Object> claims = new HashMap<>();
         claims.put("role",tourGuide.getRole());
         return doGenerateToken(claims, tourGuide.getId());
