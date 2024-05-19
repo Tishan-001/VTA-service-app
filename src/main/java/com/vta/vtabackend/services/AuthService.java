@@ -84,7 +84,7 @@ public class AuthService {
 
         userVerificationCodesRepository.delete(code);
 
-        return new AuthResponse(jwtUtil.generateToken(user));
+        return new AuthResponse(jwtUtil.generateToken(user),user.getRole().toString());
     }
 
     public AuthResponse verifyEmailOtp(String email, String otp) throws ApiException {
@@ -115,7 +115,7 @@ public class AuthService {
         if (!userDetails.isVerified()) {
             throw new CustomException("User not verified: " + request.email());
         }
-        return new AuthResponse(jwtUtil.generateToken(userDetails));
+        return new AuthResponse(jwtUtil.generateToken(userDetails),userDetails.getRole().toString());
     }
 
     public AuthResponse adminlogin(LoginWithEmailRequest request) throws ApiException {
@@ -128,7 +128,7 @@ public class AuthService {
         if(userDetails.getRole()!=Role.ADMIN) {
             throw new CustomException("Your are not a admin user");
         }
-        return new AuthResponse(jwtUtil.generateToken(userDetails));
+        return new AuthResponse(jwtUtil.generateToken(userDetails),userDetails.getRole().toString());
     }
 
     public String getCount() {

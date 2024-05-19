@@ -29,8 +29,8 @@ public class AuthController {
     @PostMapping("/register/email/verify")
     private ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
         try {
-            AuthResponse response = authService.verifyEmailOtp(request.source(), request.otp());
-            return ResponseEntity.ok(Map.of("token", response.token()));
+            AuthResponse result = authService.verifyEmailOtp(request.source(), request.otp());
+            return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
         } catch(CustomException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -50,7 +50,7 @@ public class AuthController {
     private ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
         try {
             AuthResponse result = authService.loginWithEmail(request);
-            return ResponseEntity.ok(Map.of("token", result.token()));
+            return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
         } catch (CustomException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 public record RegisterTourGuideRequest(@NotNull String name,
                                        @NotNull @Email String email,
                                        @NotNull String mobile,
-                                       @NotNull String password,
                                        @NotNull String address,
                                        @NotNull String price,
                                        String media,

@@ -19,7 +19,8 @@ public class TourGuideService {
     private final TourGuideRepository tourGuideRepository;
     private final JWTUtil jwtUtil;
 
-    public String saveTourGuide(RegisterTourGuideRequest request){
+    public String saveTourGuide(RegisterTourGuideRequest request, String token){
+        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
         boolean exists = tourGuideRepository.existsByEmail(request.email());
         if (exists) {
             return  "Email already exists: " + request.email();
@@ -29,7 +30,6 @@ public class TourGuideService {
                     .name(request.name())
                     .email(request.email())
                     .address(request.address())
-                    .password(request.password())
                     .mobile(request.mobile())
                     .media(request.media())
                     .address(request.address())
@@ -37,6 +37,7 @@ public class TourGuideService {
                     .price(request.price())
                     .starRating(request.starRating())
                     .description(request.description())
+                    .userId(userId)
                     .build();
 
             tourGuideRepository.save(tourGuide);

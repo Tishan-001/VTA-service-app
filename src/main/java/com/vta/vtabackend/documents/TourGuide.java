@@ -24,4 +24,5 @@ public class TourGuide {
     private String price;
     private Integer starRating;
     private String description;
+    private String userId;
 }

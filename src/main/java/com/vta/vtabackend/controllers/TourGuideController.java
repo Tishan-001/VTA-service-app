@@ -18,8 +18,8 @@ public class TourGuideController {
     private final TourGuideService tourGuideService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> saveTourGuide(@RequestBody @Valid RegisterTourGuideRequest request) {
-            String result = tourGuideService.saveTourGuide(request);
+    public ResponseEntity<String> saveTourGuide(@RequestBody @Valid RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
+            String result = tourGuideService.saveTourGuide(request, token);
             return ResponseEntity.ok(result);
     }
 
