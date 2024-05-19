@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "tourGuideBooking")
+@Document(collection = "tour_guide_booking")
 public class TourGuideBooking {
     @Id
     private String bookingId;
@@ -21,6 +21,6 @@ public class TourGuideBooking {
     private String bookingEndDate;
     private String bookingPrice;
     private final BookingType bookingType =BookingType.TourGuide;
-    private String serviceProviderId;
+    private String serviceProviderEmail;
 
 }

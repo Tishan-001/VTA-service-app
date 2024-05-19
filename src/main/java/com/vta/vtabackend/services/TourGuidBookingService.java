@@ -1,8 +1,7 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.*;
-import com.vta.vtabackend.dto.TourGuidBookingRequest;
-import com.vta.vtabackend.dto.TransportBookingRequest;
+import com.vta.vtabackend.dto.TourGuideBookingRequest;
 import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.repositories.*;
 import com.vta.vtabackend.response.EmailRequest;
@@ -20,14 +19,14 @@ public class TourGuidBookingService {
     private final TourGuideRepository tourGuideRepository;
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
-    public String createBooking(TourGuidBookingRequest request, String token){
+    public String createBooking(TourGuideBookingRequest request, String token){
 
         if (!jwtUtil.validateToken(token.substring(7))) {
             throw new CustomException("Invalid or expired token");
         }
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
 
-        TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderId());
+        TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderEmail());
         if(service==null){
             throw new CustomException("Tour Guide not found!");
         }
@@ -47,7 +46,7 @@ public class TourGuidBookingService {
                 .orElseThrow(()-> new CustomException("No booking available for "+ request.getEmail().toString()));
     }
 
-    private TourGuideBooking buildTourGuideBooking(TourGuidBookingRequest request, String userId) {
+    private TourGuideBooking buildTourGuideBooking(TourGuideBookingRequest request, String userId) {
         return TourGuideBooking.builder()
                 .bookingId(generateBookingId())
                 .userId(userId)
@@ -56,7 +55,7 @@ public class TourGuidBookingService {
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
                 .userContact(request.userContact())
-                .serviceProviderId(request.serviceProviderId())
+                .serviceProviderEmail(request.serviceProviderEmail())
                 .build();
     }
 

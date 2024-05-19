@@ -1,24 +1,23 @@
 package com.vta.vtabackend.controllers;
 
-import com.vta.vtabackend.dto.TourGuideBookingRequest;
+import com.vta.vtabackend.dto.HotelBookingRequest;
 import com.vta.vtabackend.exceptions.ApiException;
 import com.vta.vtabackend.response.EmailRequest;
-import com.vta.vtabackend.services.TourGuidBookingService;
+import com.vta.vtabackend.services.HotelBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("hotel-booking")
 @RequiredArgsConstructor
-@RequestMapping("tour-guide-booking")
-public class TourGuideBookingController {
-    private final TourGuidBookingService tourGuidBookingService;
-
+public class HotelBookingController {
+    private final HotelBookingService hotelBookingService;
     @PostMapping("/create")
-    public ResponseEntity<?> createTourGuideBooking(@RequestBody TourGuideBookingRequest booking, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> createHotelBooking(@RequestBody HotelBookingRequest booking, @RequestHeader("Authorization") String token) {
 
         try {
-            String result = tourGuidBookingService.createBooking(booking,token);
+            String result = hotelBookingService.createBooking(booking,token);
             return ResponseEntity.ok(result);
         }catch (ApiException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -28,7 +27,7 @@ public class TourGuideBookingController {
     @GetMapping("/get-bookings")
     public ResponseEntity<?> getBookingsByEmail(@RequestBody EmailRequest request){
         try {
-            return ResponseEntity.ok(tourGuidBookingService.getBookingsByEmail(request));
+            return ResponseEntity.ok(hotelBookingService.getBookingsByServiceProviderEmail(request));
         }catch (ApiException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
