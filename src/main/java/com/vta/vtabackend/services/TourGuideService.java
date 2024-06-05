@@ -99,4 +99,12 @@ public class TourGuideService {
     public String getTourGuidesCount() {
         return String.valueOf(tourGuideRepository.count());
     }
+
+    public TourGuide getTourguideByEmail(String email) {
+        boolean exists = tourGuideRepository.existsByEmail(email);
+        if (!exists) {
+            throw new CustomException("This email does not exist");
+        }
+        return tourGuideRepository.getTourguideByEmail(email);
+    }
 }

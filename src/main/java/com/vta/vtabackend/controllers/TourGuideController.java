@@ -56,4 +56,15 @@ public class TourGuideController {
         String response = tourGuideService.getTourGuidesCount();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/guider/{email}")
+    public ResponseEntity<?> guiderTourGuide(@PathVariable String email) {
+        try {
+            TourGuide tourGuide = tourGuideService.getTourguideByEmail(email);
+            return ResponseEntity.ok(tourGuide);
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
 }

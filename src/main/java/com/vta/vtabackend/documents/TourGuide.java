@@ -22,7 +22,7 @@ public class TourGuide {
     private Role role;
     private String media;
     private String price;
-    private Integer starRating;
+    private String starRating;
     private String description;
     private String userId;
 }
