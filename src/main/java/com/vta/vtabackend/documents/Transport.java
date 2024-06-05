@@ -20,6 +20,7 @@ public class Transport {
     private String name;
     private String email;
     private String mobile;
+    private String password;
     private String address;
     private Double price;
     private List<String> features;
@@ -27,7 +28,11 @@ public class Transport {
     private Integer reviews;
     private String description;
     private VehicleCategory vehicleCategory;
+
     private String userId;
-    private static final Role role = Role.TRANSPORT;
+    private final Role role = Role.TRANSPORT;
+    private boolean verified;
+
+
 }
 

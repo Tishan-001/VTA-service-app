@@ -28,14 +28,14 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     @SuppressWarnings("unchecked")
     public Mono<Authentication> authenticate(Authentication authentication) {
         String authToken = authentication.getCredentials().toString();
-
+        System.out.println();
         try {
             if (!jwtUtil.validateToken(authToken)) {
                 return Mono.error(new CustomException("Token is expired or invalid."));
             }
             Claims claims = jwtUtil.getAllClaimsFromToken(authToken);
             List<GrantedAuthority> authorities = new ArrayList<>();
-            // Assuming role is a single role. If it's multiple roles, you would need to split and add each one.
+            // Assuming role is a single role. If its multiple roles, you would need to split and add each one.
             authorities.add(new SimpleGrantedAuthority("ROLE_" + claims.get("role", String.class)));
 
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(

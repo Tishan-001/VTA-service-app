@@ -1,8 +1,11 @@
 package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.TourGuide;
+import com.vta.vtabackend.dto.AuthResponse;
+import com.vta.vtabackend.dto.LoginWithEmailRequest;
 import com.vta.vtabackend.dto.RegisterTourGuideRequest;
 import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.response.EmailRequest;
 import com.vta.vtabackend.services.TourGuideService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,12 +25,22 @@ public class TourGuideController {
             String result = tourGuideService.saveTourGuide(request, token);
             return ResponseEntity.ok(result);
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> loginAsTransport(@RequestBody @Valid LoginWithEmailRequest request){
+        try{
+            AuthResponse authResponse = tourGuideService.loginWithEmail(request);
+            return ResponseEntity.ok(authResponse);
+        }catch(CustomException exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
 
     @GetMapping("/")
     public ResponseEntity<?> getTourGuides() {
         List<TourGuide> tourGuides = tourGuideService.getTourGuides();
         return ResponseEntity.ok(tourGuides);
     }
+
 
     @GetMapping("/tourguide/{id}")
     public ResponseEntity<?> getTourGuide(@PathVariable String id) {
@@ -39,15 +52,15 @@ public class TourGuideController {
         }
     }
 
-    @GetMapping("/update")
+    @PostMapping("/update")
     public ResponseEntity<?> updateTourGuide(@Valid @RequestBody RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
         String result = tourGuideService.updateTourGuide(request, token);
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteTourGuide(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String result = tourGuideService.deleteTourGuide(email, token);
+    public ResponseEntity<?> deleteTourGuide(@RequestBody EmailRequest emailRequest, @RequestHeader("Authorization") String token) {
+        String result = tourGuideService.deleteTourGuide(emailRequest.getEmail(), token);
         return ResponseEntity.ok(result);
     }
 
