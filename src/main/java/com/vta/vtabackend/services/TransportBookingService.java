@@ -32,8 +32,7 @@ public class TransportBookingService {
         }
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
 
-        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderEmail()).orElseThrow(()->
-        new CustomException("Transport Service Not found!"));
+        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderEmail());
         UserDetails user = userRepository.findById(userId).orElseThrow(()->
         new CustomException("Authentication failed!"));
         try {

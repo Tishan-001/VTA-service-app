@@ -33,6 +33,5 @@ public class Transport {
     private final Role role = Role.TRANSPORT;
     private boolean verified;
 
-
 }
 
