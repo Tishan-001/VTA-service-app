@@ -1,13 +1,13 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.TourPackage;
-import com.vta.vtabackend.documents.UserDetails;
+import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.TourPackageRequest;
 import com.vta.vtabackend.enums.Role;
-import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.TourPackageRepository;
 import com.vta.vtabackend.repositories.UserRepository;
-import com.vta.vtabackend.utils.JWTUtil;
+import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +19,16 @@ import java.util.UUID;
 public class TourPackageService {
     private final TourPackageRepository tourPackageRepository;
     private final UserRepository userRepository;
-    private final JWTUtil jwtUtil;
+    private final TokenService tokenService;
 
     public String createPackage(TourPackageRequest request, String token) {
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
-        UserDetails userDetails = userRepository.findById(userId).orElse(null);
-        assert userDetails != null;
-        if (userDetails.getRole() != Role.ADMIN) {
-            throw new CustomException ("You are not admin");
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        assert user != null;
+        if (user.getRole() != Role.ADMIN) {
+            throw new VTAException(VTAException.Type.UNAUTHORIZED,
+                    ErrorStatusCodes.YOU_ARE_NOT_ADMIN.getMessage(),
+                    ErrorStatusCodes.YOU_ARE_NOT_ADMIN.getCode());
         }
         TourPackage tourPackage = TourPackage.builder()
                 .id(UUID.randomUUID().toString())
@@ -52,7 +54,9 @@ public class TourPackageService {
     public TourPackage getTourPackage(String id) {
         boolean exists = tourPackageRepository.existsById(id);
         if (!exists) {
-            throw new CustomException ("TourPackage not found");
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.TOURPACKAGE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.TOURPACKAGE_NOT_FOUND.getCode());
         }
         return tourPackageRepository.findById(id).orElse(null);
     }

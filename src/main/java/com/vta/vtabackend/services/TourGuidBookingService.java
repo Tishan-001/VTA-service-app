@@ -2,10 +2,10 @@ package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.*;
 import com.vta.vtabackend.dto.TourGuideBookingRequest;
-import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.*;
 import com.vta.vtabackend.response.EmailRequest;
-import com.vta.vtabackend.utils.JWTUtil;
+import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,32 +18,41 @@ public class TourGuidBookingService {
     private final TourGuidBookingRepository tourGuidBookingRepository;
     private final TourGuideRepository tourGuideRepository;
     private final UserRepository userRepository;
-    private final JWTUtil jwtUtil;
+    private final TokenService tokenService;
+
     public String createBooking(TourGuideBookingRequest request, String token){
 
-        if (!jwtUtil.validateToken(token.substring(7))) {
-            throw new CustomException("Invalid or expired token");
+        if (tokenService.isTokenExpired(token)) {
+            throw new VTAException(VTAException.Type.UNAUTHORIZED,
+                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getMessage(),
+                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getCode());
         }
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
 
         TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderEmail());
         if(service==null){
-            throw new CustomException("Tour Guide not found!");
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
         }
-        UserDetails user = userRepository.findById(userId).orElseThrow(()->
-                new CustomException("Authentication failed!"));
+
         try {
-            TourGuideBooking tourGuideBooking = buildTourGuideBooking(request,userId);
+            TourGuideBooking tourGuideBooking = buildTourGuideBooking(request,user.getId());
             tourGuidBookingRepository.save(tourGuideBooking);
             return "Your booking is successful";
         }
         catch (Exception e){
-            throw new CustomException("Failed to create booking: "+e.getMessage());
+            throw new VTAException(VTAException.Type.EXTERNAL_SYSTEM_ERROR,
+                    ErrorStatusCodes.BOOKING_FAILED.getMessage(),
+                    ErrorStatusCodes.BOOKING_FAILED.getCode());
         }
     }
     public List<TourGuideBooking> getBookingsByEmail(EmailRequest request){
         return tourGuidBookingRepository.getByServiceProviderEmail(request.getEmail())
-                .orElseThrow(()-> new CustomException("No booking available for "+ request.getEmail().toString()));
+                .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
     }
 
     private TourGuideBooking buildTourGuideBooking(TourGuideBookingRequest request, String userId) {

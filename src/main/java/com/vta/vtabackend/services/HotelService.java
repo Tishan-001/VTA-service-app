@@ -1,10 +1,12 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Hotel;
+import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.CreateHotelRequest;
-import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.HotelRepository;
-import com.vta.vtabackend.utils.JWTUtil;
+import com.vta.vtabackend.repositories.UserRepository;
+import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HotelService {
     private final HotelRepository hotelRepository;
-    private final JWTUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final TokenService tokenService;
 
-    public String createHotel(CreateHotelRequest request, String token) throws CustomException {
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+    public String createHotel(CreateHotelRequest request, String token) {
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
         boolean exits = hotelRepository.existsByEmail(request.email());
         if(exits) {
             return  "Hotel already registered";
@@ -42,7 +46,7 @@ public class HotelService {
                     .media(request.media())
                     .rooms(request.rooms())
                     .pricePerNight(request.pricePerNight())
-                    .userId(userId)
+                    .userId(user.getId())
                     .build();
             hotelRepository.save(hotel);
             return "Hotel profile create successfully";
@@ -56,18 +60,21 @@ public class HotelService {
     public Hotel getHotel(String email) {
         boolean exits = hotelRepository.existsByEmail(email);
         if (!exits) {
-            throw new CustomException("Hotel profile can't bo found");
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getCode());
         }
         return hotelRepository.getHotelByEmail(email);
     }
 
     public String updateHotel(CreateHotelRequest request, String token) {
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
         boolean exits = hotelRepository.existsByEmail(request.email());
         Hotel hotel = hotelRepository.getHotelByEmail(request.email());
 
         if(exits) {
-            if(Objects.equals(userId, hotel.getUserId())) {
+            if(Objects.equals(user.getId(), hotel.getUserId())) {
                 hotel.setName(request.name());
                 hotel.setAddress(request.address());
                 hotel.setCity(request.city());
@@ -94,11 +101,12 @@ public class HotelService {
     }
 
     public String deleteHotel(String email, String token) {
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
         boolean exits = hotelRepository.existsByEmail(email);
         Hotel hotel = hotelRepository.getHotelByEmail(email);
         if(exits) {
-            if(Objects.equals(userId, hotel.getUserId())) {
+            if(Objects.equals(user.getId(), hotel.getUserId())) {
                 hotelRepository.deleteByEmail(email);
                 return "Delete hotel profile";
             } else {

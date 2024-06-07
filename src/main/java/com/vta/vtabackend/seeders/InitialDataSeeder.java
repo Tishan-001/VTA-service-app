@@ -1,17 +1,16 @@
 package com.vta.vtabackend.seeders;
 
-import com.vta.vtabackend.documents.UserDetails;
+import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.enums.Role;
 import com.vta.vtabackend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -20,7 +19,7 @@ import java.util.UUID;
 public class InitialDataSeeder implements ApplicationListener<ApplicationReadyEvent> {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
@@ -28,13 +27,13 @@ public class InitialDataSeeder implements ApplicationListener<ApplicationReadyEv
             userRepository.findByEmail("virtualtravelassistance@gmail.com")
                     .ifPresentOrElse(user -> log.info("Admin user already exists."),
                             () -> {
-                                UserDetails userDetails = UserDetails.builder()
+                                Users users = Users.builder()
                                         .id(UUID.randomUUID().toString())
                                         .email("virtualtravelassistance@gmail.com")
                                         .password(passwordEncoder.encode("VTA@12345"))
                                         .role(Role.ADMIN)
                                         .build();
-                                userRepository.save(userDetails);
+                                userRepository.save(users);
                                 log.info("Admin user created successfully");
                             });
         } catch (Exception e) {

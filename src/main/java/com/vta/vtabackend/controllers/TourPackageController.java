@@ -2,7 +2,6 @@ package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.TourPackage;
 import com.vta.vtabackend.dto.TourPackageRequest;
-import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.services.TourPackageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +18,8 @@ public class TourPackageController {
 
     @PostMapping("/create")
     public ResponseEntity<?> addTourPackage(@RequestBody @Valid TourPackageRequest tourPackage, @RequestHeader("Authorization") String token) {
-        try {
-            String response = tourPackageService.createPackage(tourPackage, token);
-            return ResponseEntity.ok(response);
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String response = tourPackageService.createPackage(tourPackage, token);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/")
@@ -35,11 +30,7 @@ public class TourPackageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTourPackageById(@PathVariable("id") String id) {
-        try {
-            TourPackage tourPackage = tourPackageService.getTourPackage(id);
-            return ResponseEntity.ok(tourPackage);
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        TourPackage tourPackage = tourPackageService.getTourPackage(id);
+        return ResponseEntity.ok(tourPackage);
     }
 }

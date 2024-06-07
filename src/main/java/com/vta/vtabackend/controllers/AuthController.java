@@ -1,7 +1,6 @@
 package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.dto.*;
-import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,52 +17,32 @@ public class AuthController {
 
     @PostMapping("/register/email")
     public ResponseEntity<?> registerWithEmail(@RequestBody @Valid RegisterWithEmailRequest request) {
-        try {
-            String result = authService.registerWithEmail(request);
-            return ResponseEntity.ok(Map.of("message", result));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        String result = authService.registerWithEmail(request);
+        return ResponseEntity.ok(Map.of("message", result));
     }
 
     @PostMapping("/register/email/verify")
     private ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
-        try {
-            AuthResponse result = authService.verifyEmailOtp(request.source(), request.otp());
-            return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
-        } catch(CustomException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        AuthResponse result = authService.verifyEmailOtp(request.source(), request.otp());
+        return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
     }
 
     @PostMapping("/getcode")
     private ResponseEntity<?> getVerifyCode(@RequestBody @Valid OTPRequest request) {
-        try {
-            String result = authService.getVerifyCode(request);
-            return ResponseEntity.ok(Map.of("message", result));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        String result = authService.getVerifyCode(request);
+        return ResponseEntity.ok(Map.of("message", result));
     }
 
     @PostMapping("/login/email")
     private ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
-        try {
-            AuthResponse result = authService.loginWithEmail(request);
-            return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        AuthResponse result = authService.loginWithEmail(request);
+        return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
     }
 
     @PostMapping("/login/admin")
     private ResponseEntity<?> adminlogin(@RequestBody @Valid LoginWithEmailRequest request) {
-        try {
-            AuthResponse result = authService.adminlogin(request);
-            return ResponseEntity.ok(Map.of("token", result.token()));
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
+        AuthResponse result = authService.adminlogin(request);
+        return ResponseEntity.ok(Map.of("token", result.token()));
     }
 
     @GetMapping("/count")

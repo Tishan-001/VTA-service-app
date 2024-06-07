@@ -1,14 +1,12 @@
 package com.vta.vtabackend.services;
 
-import com.vta.vtabackend.components.PBKDF2Encoder;
-import com.vta.vtabackend.components.SecurityContextRepository;
 import com.vta.vtabackend.documents.Transport;
-import com.vta.vtabackend.documents.UserVerificationCode;
+import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.RegisterTransportRequest;
-import com.vta.vtabackend.enums.Role;
-import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.TransportRepository;
-import com.vta.vtabackend.utils.JWTUtil;
+import com.vta.vtabackend.repositories.UserRepository;
+import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +17,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class TransportService {
-    private TransportRepository transportRepository;
-    private PBKDF2Encoder passwordEncoder;
-    private JWTUtil jwtUtil;
+    private final TransportRepository transportRepository;
+    private final UserRepository userRepository;
+    private final TokenService tokenService;
 
     public String saveTransportationDetails(RegisterTransportRequest request, String token){
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
         boolean exists = transportRepository.existsByEmail(request.email());
         if(exists){
             return "Email already exists";
@@ -39,7 +38,7 @@ public class TransportService {
                     .price(request.price())
                     .address(request.address())
                     .description(request.description())
-                    .userId(userId)
+                    .userId(user.getId())
                     .build();
             transportRepository.save(transport);
 
@@ -52,7 +51,9 @@ public class TransportService {
     public Transport getTransport(String id){
         boolean exists= transportRepository.existsById(id);
         if(!exists){
-            throw new CustomException("Email does not exists");
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.TRANSPORT_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.TRANSPORT_NOT_FOUND.getCode());
         }else{
             return transportRepository.getTransportationById(id);
         }
@@ -60,11 +61,12 @@ public class TransportService {
     }
 
     public String deleteTransport(String email,String token){
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
         boolean exists = transportRepository.existsByEmail(email);
 
         if (exists) {
-            if(Objects.equals(userId, transportRepository.getTransportationByEmail(email).getId())) {
+            if(Objects.equals(user.getId(), transportRepository.getTransportationByEmail(email).getId())) {
                 transportRepository.deleteById(email);
                 return "Successfully deleted transport";
             } else {

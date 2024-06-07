@@ -2,20 +2,18 @@ package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Transport;
 import com.vta.vtabackend.documents.TransportBooking;
-import com.vta.vtabackend.documents.UserDetails;
+import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.TransportBookingRequest;
-import com.vta.vtabackend.exceptions.CustomException;
+import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.TransportBookingRepository;
 import com.vta.vtabackend.repositories.TransportRepository;
 import com.vta.vtabackend.repositories.UserRepository;
 import com.vta.vtabackend.response.EmailRequest;
-import com.vta.vtabackend.utils.JWTUtil;
+import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,29 +22,36 @@ public class TransportBookingService {
     private final TransportRepository transportRepository;
     private final TransportBookingRepository transportBookingRepository;
     private final UserRepository userRepository;
-    private final JWTUtil jwtUtil;
+    private final TokenService tokenService;
     public String createBooking(TransportBookingRequest request, String token){
 
-        if (!jwtUtil.validateToken(token.substring(7))) {
-            throw new CustomException("Invalid or expired token");
+        if (tokenService.isTokenExpired(token)) {
+            throw new VTAException(VTAException.Type.UNAUTHORIZED,
+                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getMessage(),
+                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getCode());
         }
-        String userId = jwtUtil.getUserIdFromToken(token.substring(7));
+
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
 
         Transport service = transportRepository.getTransportationByEmail(request.serviceProviderEmail());
-        UserDetails user = userRepository.findById(userId).orElseThrow(()->
-        new CustomException("Authentication failed!"));
+
         try {
-            TransportBooking transportBooking = buildTransportBooking(request,userId);
+            TransportBooking transportBooking = buildTransportBooking(request,user.getId());
             transportBookingRepository.save(transportBooking);
             return "Your booking is successful";
         }
         catch (Exception e){
-            throw new CustomException("Failed to create booking: "+e.getMessage());
+            throw new VTAException(VTAException.Type.EXTERNAL_SYSTEM_ERROR,
+                    ErrorStatusCodes.BOOKING_FAILED.getMessage(),
+                    ErrorStatusCodes.BOOKING_FAILED.getCode());
         }
     }
     public List<TransportBooking> getBookingsByEmail(EmailRequest request){
         return transportBookingRepository.getByServiceProviderEmail(request.getEmail())
-                .orElseThrow(()-> new CustomException("No booking available for "+ request.getEmail().toString()));
+                .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
     }
 
     private TransportBooking buildTransportBooking(TransportBookingRequest request, String userId) {

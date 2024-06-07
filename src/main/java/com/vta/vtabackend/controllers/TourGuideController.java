@@ -2,7 +2,6 @@ package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.TourGuide;
 import com.vta.vtabackend.dto.RegisterTourGuideRequest;
-import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.services.TourGuideService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +30,8 @@ public class TourGuideController {
 
     @GetMapping("/tourguide/{id}")
     public ResponseEntity<?> getTourGuide(@PathVariable String id) {
-        try {
-            TourGuide tourGuide = tourGuideService.getTourguide(id);
-            return ResponseEntity.ok(tourGuide);
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        TourGuide tourGuide = tourGuideService.getTourguide(id);
+        return ResponseEntity.ok(tourGuide);
     }
 
     @GetMapping("/update")
@@ -59,12 +54,7 @@ public class TourGuideController {
 
     @GetMapping("/guider/{email}")
     public ResponseEntity<?> guiderTourGuide(@PathVariable String email) {
-        try {
-            TourGuide tourGuide = tourGuideService.getTourguideByEmail(email);
-            return ResponseEntity.ok(tourGuide);
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        TourGuide tourGuide = tourGuideService.getTourguideByEmail(email);
+        return ResponseEntity.ok(tourGuide);
     }
 }

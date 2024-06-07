@@ -1,7 +1,6 @@
 package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.dto.TourGuideBookingRequest;
-import com.vta.vtabackend.exceptions.ApiException;
 import com.vta.vtabackend.response.EmailRequest;
 import com.vta.vtabackend.services.TourGuidBookingService;
 import lombok.RequiredArgsConstructor;
@@ -16,21 +15,12 @@ public class TourGuideBookingController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createTourGuideBooking(@RequestBody TourGuideBookingRequest booking, @RequestHeader("Authorization") String token) {
-
-        try {
-            String result = tourGuidBookingService.createBooking(booking,token);
-            return ResponseEntity.ok(result);
-        }catch (ApiException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String result = tourGuidBookingService.createBooking(booking,token);
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/get-bookings")
     public ResponseEntity<?> getBookingsByEmail(@RequestBody EmailRequest request){
-        try {
-            return ResponseEntity.ok(tourGuidBookingService.getBookingsByEmail(request));
-        }catch (ApiException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(tourGuidBookingService.getBookingsByEmail(request));
     }
 }
