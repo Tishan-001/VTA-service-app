@@ -18,7 +18,7 @@ public class HotelController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
-        String result = hotelService.createHotel(request, token);
+        String result = hotelService.createHotel(request, token.substring(7));
         return ResponseEntity.ok(result);
     }
 
@@ -28,7 +28,7 @@ public class HotelController {
         return ResponseEntity.ok(hotels);
     }
 
-    @GetMapping("/hotel")
+    @GetMapping("/get")
     public ResponseEntity<?> getHotel(@RequestBody String email) {
         Hotel result = hotelService.getHotel(email);
         return ResponseEntity.ok(result);
@@ -36,13 +36,13 @@ public class HotelController {
 
     @PostMapping("/update")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
-        String response = hotelService.updateHotel(request, token);
+        String response = hotelService.updateHotel(request, token.substring(7));
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteHotel(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String response = hotelService.deleteHotel(email, token);
+        String response = hotelService.deleteHotel(email, token.substring(7));
         return ResponseEntity.ok(response);
     }
 

@@ -18,7 +18,7 @@ public class TourPackageController {
 
     @PostMapping("/create")
     public ResponseEntity<?> addTourPackage(@RequestBody @Valid TourPackageRequest tourPackage, @RequestHeader("Authorization") String token) {
-        String response = tourPackageService.createPackage(tourPackage, token);
+        String response = tourPackageService.createPackage(tourPackage, token.substring(7));
         return ResponseEntity.ok(response);
     }
 

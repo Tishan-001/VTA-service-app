@@ -18,7 +18,7 @@ public class TransportController {
 
     @PostMapping("/create")
     public ResponseEntity<String> saveTransportDetails(@RequestBody @Valid RegisterTransportRequest request, @RequestHeader("Authorization") String token) {
-        String result = transportService.saveTransportationDetails(request, token);
+        String result = transportService.saveTransportationDetails(request, token.substring(7));
         return ResponseEntity.ok(result);
     }
 

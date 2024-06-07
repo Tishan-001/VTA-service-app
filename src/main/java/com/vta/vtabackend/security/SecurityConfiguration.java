@@ -12,9 +12,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -30,8 +31,32 @@ public class SecurityConfiguration {
             "/auth/login/email",
             "/auth/login/admin",
             "/auth/count",
-            "/images/upload"
+            "/hotels/create",
+            "/hotels/",
+            "/hotels/update",
+            "/hotels/delete",
+            "/hotels/get",
+            "/hotels/count",
+            "/tourguides/register",
+            "/tourguides/",
+            "/tourguides/tourguide/{id}",
+            "/tourguides/update",
+            "/tourguides/delete",
+            "/tourguides/count",
+            "/tourguides/guider/{email}",
+            "/tourpackage/create",
+            "/tourpackage/",
+            "/tourpackage/{id}",
+            "/images/upload",
+            "/booking/create",
+            "/hotel-booking/create",
+            "/hotel-booking/get-bookings",
+            "/tour-guide-booking/create",
+            "/tour-guide-booking/get-bookings",
+            "/transport-booking/create",
+            "/transport-booking/get-bookings",
     };
+
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -39,32 +64,28 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(WHITE_LIST_URL)
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-        ;
+                .cors(withDefaults());  // CORS configuration
 
         return http.build();
     }
 
     @Bean
-    public CorsConfigurationSource createCorsConfigSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.applyPermitDefaultValues();
-        config.addAllowedOrigin("*");
-        config.addAllowedMethod(HttpMethod.OPTIONS);
-        config.addAllowedMethod(HttpMethod.GET);
-        config.addAllowedMethod(HttpMethod.PUT);
-        config.addAllowedMethod(HttpMethod.POST);
-        config.addAllowedMethod(HttpMethod.DELETE);
-        config.addAllowedMethod(HttpMethod.PATCH);
+        config.setAllowCredentials(true);  // Allow cookies and other credentials
+        config.addAllowedOrigin("http://localhost:3000");  // Allow specific origin
+        config.addAllowedHeader("*");  // Allow all headers
+        config.addAllowedMethod("*");  // Allow all HTTP methods
 
         source.registerCorsConfiguration("/**", config);
         return source;

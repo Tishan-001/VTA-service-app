@@ -18,7 +18,7 @@ public class TourGuideController {
 
     @PostMapping("/register")
     public ResponseEntity<String> saveTourGuide(@RequestBody @Valid RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
-        String result = tourGuideService.saveTourGuide(request, token);
+        String result = tourGuideService.saveTourGuide(request, token.substring(7));
         return ResponseEntity.ok(result);
     }
 
@@ -36,13 +36,13 @@ public class TourGuideController {
 
     @GetMapping("/update")
     public ResponseEntity<?> updateTourGuide(@Valid @RequestBody RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
-        String result = tourGuideService.updateTourGuide(request, token);
+        String result = tourGuideService.updateTourGuide(request, token.substring(7));
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteTourGuide(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String result = tourGuideService.deleteTourGuide(email, token);
+        String result = tourGuideService.deleteTourGuide(email, token.substring(7));
         return ResponseEntity.ok(result);
     }
 

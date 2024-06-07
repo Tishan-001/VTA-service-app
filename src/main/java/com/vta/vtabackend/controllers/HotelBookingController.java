@@ -14,7 +14,7 @@ public class HotelBookingController {
     private final HotelBookingService hotelBookingService;
     @PostMapping("/create")
     public ResponseEntity<?> createHotelBooking(@RequestBody HotelBookingRequest booking, @RequestHeader("Authorization") String token) {
-        String result = hotelBookingService.createBooking(booking,token);
+        String result = hotelBookingService.createBooking(booking,token.substring(7));
         return ResponseEntity.ok(result);
     }
 

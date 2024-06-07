@@ -15,7 +15,7 @@ public class TourGuideBookingController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createTourGuideBooking(@RequestBody TourGuideBookingRequest booking, @RequestHeader("Authorization") String token) {
-        String result = tourGuidBookingService.createBooking(booking,token);
+        String result = tourGuidBookingService.createBooking(booking,token.substring(7));
         return ResponseEntity.ok(result);
     }
 

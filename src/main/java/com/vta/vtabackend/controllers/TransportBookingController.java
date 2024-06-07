@@ -14,7 +14,7 @@ public class TransportBookingController {
     private final TransportBookingService transportBookingService;
     @PostMapping("/create")
     public ResponseEntity<?> createTransportBooking(@RequestBody TransportBookingRequest booking, @RequestHeader ("Authorization") String token) {
-        String result = transportBookingService.createBooking(booking,token);
+        String result = transportBookingService.createBooking(booking,token.substring(7));
         return ResponseEntity.ok(result);
     }
 
