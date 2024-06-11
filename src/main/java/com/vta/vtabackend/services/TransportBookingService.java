@@ -32,7 +32,7 @@ public class TransportBookingService {
         }
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
 
-        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderEmail()).orElseThrow(()->
+        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderId()).orElseThrow(()->
         new CustomException("Transport Service Not found!"));
         UserDetails user = userRepository.findById(userId).orElseThrow(()->
         new CustomException("Authentication failed!"));
@@ -46,7 +46,7 @@ public class TransportBookingService {
         }
     }
     public List<TransportBooking> getBookingsByEmail(EmailRequest request){
-        return transportBookingRepository.getByServiceProviderEmail(request.getEmail())
+        return transportBookingRepository.getByServiceProviderId(request.getEmail())
                 .orElseThrow(()-> new CustomException("No booking available for "+ request.getEmail().toString()));
     }
 
@@ -59,7 +59,7 @@ public class TransportBookingService {
                 .bookingStartDate(request.bookingStartDate())
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
-                .serviceProviderEmail(request.serviceProviderEmail())
+                .serviceProviderId(request.serviceProviderId())
                 .build();
     }
 

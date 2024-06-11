@@ -26,7 +26,7 @@ public class TourGuidBookingService {
         }
         String userId = jwtUtil.getUserIdFromToken(token.substring(7));
 
-        TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderEmail());
+        TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderId());
         if(service==null){
             throw new CustomException("Tour Guide not found!");
         }
@@ -42,7 +42,7 @@ public class TourGuidBookingService {
         }
     }
     public List<TourGuideBooking> getBookingsByEmail(EmailRequest request){
-        return tourGuidBookingRepository.getByServiceProviderEmail(request.getEmail())
+        return tourGuidBookingRepository.getByServiceProviderById(request.getEmail())
                 .orElseThrow(()-> new CustomException("No booking available for "+ request.getEmail().toString()));
     }
 
@@ -55,7 +55,7 @@ public class TourGuidBookingService {
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
                 .userContact(request.userContact())
-                .serviceProviderEmail(request.serviceProviderEmail())
+                .serviceProviderID(request.serviceProviderId())
                 .build();
     }
 

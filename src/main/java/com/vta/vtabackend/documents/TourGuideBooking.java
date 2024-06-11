@@ -21,6 +21,6 @@ public class TourGuideBooking {
     private String bookingEndDate;
     private String bookingPrice;
     private final BookingType bookingType =BookingType.TourGuide;
-    private String serviceProviderEmail;
+    private String serviceProviderID;
 
 }
