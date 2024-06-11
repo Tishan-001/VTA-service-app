@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface TransportBookingRepository extends MongoRepository<TransportBooking,String> {
 
-    Optional<List<TransportBooking>> getByServiceProviderId(String email);
+    Optional<List<TransportBooking>> getByServiceProviderId(String id);
+    Optional<List<TransportBooking>> getByServiceProviderEmail(String email);
 }

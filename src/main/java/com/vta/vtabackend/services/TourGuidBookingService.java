@@ -30,7 +30,7 @@ public class TourGuidBookingService {
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
 
-        TourGuide service = tourGuideRepository.getTourguideByEmail(request.serviceProviderEmail());
+        TourGuide service = tourGuideRepository.getTourguideById(request.serviceProviderId());
         if(service==null){
             throw new VTAException(VTAException.Type.NOT_FOUND,
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
@@ -49,7 +49,7 @@ public class TourGuidBookingService {
         }
     }
     public List<TourGuideBooking> getBookingsByEmail(EmailRequest request){
-        return tourGuidBookingRepository.getByServiceProviderEmail(request.getEmail())
+        return tourGuidBookingRepository.getByServiceProviderByEmail(request.getEmail())
                 .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
@@ -64,7 +64,7 @@ public class TourGuidBookingService {
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
                 .userContact(request.userContact())
-                .serviceProviderEmail(request.serviceProviderEmail())
+                .serviceProviderID(request.serviceProviderId())
                 .build();
     }
 

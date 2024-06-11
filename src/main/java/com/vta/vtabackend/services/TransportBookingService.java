@@ -34,7 +34,7 @@ public class TransportBookingService {
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
 
-        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderEmail());
+        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderId());
 
         try {
             TransportBooking transportBooking = buildTransportBooking(request,user.getId());
@@ -63,7 +63,7 @@ public class TransportBookingService {
                 .bookingStartDate(request.bookingStartDate())
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
-                .serviceProviderEmail(request.serviceProviderEmail())
+                .serviceProviderId(request.serviceProviderId())
                 .build();
     }
 
