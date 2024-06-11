@@ -28,6 +28,7 @@ public class Transport {
     private Integer reviews;
     private String description;
     private VehicleCategory vehicleCategory;
+
     private String userId;
     private final Role role = Role.TRANSPORT;
     private boolean verified;

@@ -2,8 +2,6 @@ package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.dto.CreateHotelRequest;
-import com.vta.vtabackend.exceptions.ApiException;
-import com.vta.vtabackend.exceptions.CustomException;
 import com.vta.vtabackend.services.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +18,8 @@ public class HotelController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createHotel(@RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
-        try {
-            String result = hotelService.createHotel(request, token);
-            return ResponseEntity.ok(result);
-        } catch (ApiException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        String result = hotelService.createHotel(request, token.substring(7));
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/")
@@ -34,25 +28,21 @@ public class HotelController {
         return ResponseEntity.ok(hotels);
     }
 
-    @GetMapping("/hotel")
+    @GetMapping("/get")
     public ResponseEntity<?> getHotel(@RequestBody String email) {
-        try {
-            Hotel result = hotelService.getHotel(email);
-            return ResponseEntity.ok(result);
-        } catch (CustomException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Hotel result = hotelService.getHotel(email);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/update")
     public ResponseEntity<?> updateHotel(@Valid @RequestBody CreateHotelRequest request, @RequestHeader("Authorization") String token) {
-        String response = hotelService.updateHotel(request, token);
+        String response = hotelService.updateHotel(request, token.substring(7));
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteHotel(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String response = hotelService.deleteHotel(email, token);
+        String response = hotelService.deleteHotel(email, token.substring(7));
         return ResponseEntity.ok(response);
     }
 
