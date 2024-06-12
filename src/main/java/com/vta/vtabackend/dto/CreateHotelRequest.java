@@ -8,16 +8,11 @@ import java.util.List;
 public record CreateHotelRequest(@NotNull String name,
                                  @NotNull String address,
                                  @NotNull String city,
-                                 @NotNull String photo,
                                  @NotNull String hotline,
                                  @NotNull String mobileNo,
                                  @NotNull String email,
                                  @NotNull String whatsapp,
                                  @NotNull String description,
-                                 @NotNull String type,
-                                 @NotNull List<String> facilities,
-                                 @NotNull List<Hotel.Room> rooms,
                                  @NotNull List<String> media,
-                                 @NotNull Double pricePerNight,
-                                 @NotNull Integer starRating) {
+                                 @NotNull Double pricePerNight) {
 }

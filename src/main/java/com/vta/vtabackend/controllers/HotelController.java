@@ -2,6 +2,7 @@ package com.vta.vtabackend.controllers;
 
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.dto.CreateHotelRequest;
+import com.vta.vtabackend.dto.CreateRoomRequest;
 import com.vta.vtabackend.services.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +41,9 @@ public class HotelController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteHotel(@RequestParam("email") String email, @RequestHeader("Authorization") String token) {
-        String response = hotelService.deleteHotel(email, token.substring(7));
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteHotel(@PathVariable String id, @RequestHeader("Authorization") String token) {
+        String response = hotelService.deleteHotel(id, token.substring(7));
         return ResponseEntity.ok(response);
     }
 
@@ -50,5 +51,23 @@ public class HotelController {
     public ResponseEntity<?> getHotelCount() {
         String count = hotelService.getHotelCount();
         return ResponseEntity.ok(count);
+    }
+
+    @PostMapping("/add/room")
+    public ResponseEntity<?> addRoom(@RequestBody CreateRoomRequest request, @RequestHeader("Authorization") String token) {
+        String response = hotelService.addRoom(request, token.substring(7));
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/room/{id}")
+    public ResponseEntity<?> deleteRoom(@PathVariable String id, @RequestHeader("Authorization") String token) {
+        String response = hotelService.deleteRoom(id, token.substring(7));
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get/rooms")
+    public ResponseEntity<List<Hotel.Room>> getHotelRooms(@RequestHeader("Authorization") String token) {
+        List<Hotel.Room> rooms = hotelService.getHotelRooms(token.substring(7));
+        return ResponseEntity.ok(rooms);
     }
 }
