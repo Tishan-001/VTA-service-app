@@ -29,8 +29,8 @@ public class TourPackage {
     @Setter
     public static class TimePlane{
         private String id;
-        private String place;
         private String date;
+        private String place;
         private String reservation;
         private String description;
     }

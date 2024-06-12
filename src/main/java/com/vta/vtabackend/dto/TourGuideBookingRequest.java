@@ -10,5 +10,4 @@ public record TourGuideBookingRequest(
         @NotNull String userContact,
         @NotNull String serviceProviderEmail
 ) {
-
 }

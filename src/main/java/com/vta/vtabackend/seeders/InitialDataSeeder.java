@@ -32,6 +32,7 @@ public class InitialDataSeeder implements ApplicationListener<ApplicationReadyEv
                                         .email("virtualtravelassistance@gmail.com")
                                         .password(passwordEncoder.encode("VTA@12345"))
                                         .role(Role.ADMIN)
+                                        .verified(true)
                                         .build();
                                 userRepository.save(users);
                                 log.info("Admin user created successfully");
