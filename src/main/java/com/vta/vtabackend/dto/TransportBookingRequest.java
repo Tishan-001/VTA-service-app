@@ -10,6 +10,6 @@ public record TransportBookingRequest(
                                       @NotNull String bookingStartDate,
                                       @NotNull String bookingEndDate,
                                       @NotNull String bookingPrice,
-                                      @NotNull String serviceProviderEmail
+                                      @NotNull String serviceProviderId
                                       ) {
 }

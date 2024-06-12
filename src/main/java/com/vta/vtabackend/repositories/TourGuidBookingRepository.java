@@ -8,5 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TourGuidBookingRepository extends MongoRepository<TourGuideBooking,String> {
-    Optional<List<TourGuideBooking>> getByServiceProviderEmail(String email);
+    Optional<List<TourGuideBooking>> getByServiceProviderById(String id);
+    Optional<List<TourGuideBooking>> getByServiceProviderByEmail(String Email);
 }

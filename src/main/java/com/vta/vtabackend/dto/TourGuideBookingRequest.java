@@ -8,6 +8,6 @@ public record TourGuideBookingRequest(
         @NotNull String bookingEndDate,
         @NotNull String bookingPrice,
         @NotNull String userContact,
-        @NotNull String serviceProviderEmail
+        @NotNull String serviceProviderId
 ) {
 }
