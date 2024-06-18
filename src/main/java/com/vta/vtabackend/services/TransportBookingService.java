@@ -34,8 +34,12 @@ public class TransportBookingService {
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
 
-        Transport service = transportRepository.getTransportationByEmail(request.serviceProviderId());
-
+        Transport service = transportRepository.getTransportationById(request.serviceProviderId());
+        if(service==null){
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
+        }
         try {
             TransportBooking transportBooking = buildTransportBooking(request,user.getId());
             transportBookingRepository.save(transportBooking);
@@ -48,7 +52,8 @@ public class TransportBookingService {
         }
     }
     public List<TransportBooking> getBookingsByEmail(EmailRequest request){
-        return transportBookingRepository.getByServiceProviderEmail(request.getEmail())
+        String serviceProviderId = transportRepository.getTransportationByEmail(request.getEmail()).getId();
+        return transportBookingRepository.getByServiceProviderId(serviceProviderId)
                 .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));

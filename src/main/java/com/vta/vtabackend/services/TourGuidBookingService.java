@@ -49,7 +49,8 @@ public class TourGuidBookingService {
         }
     }
     public List<TourGuideBooking> getBookingsByEmail(EmailRequest request){
-        return tourGuidBookingRepository.getByServiceProviderByEmail(request.getEmail())
+        String tourGuideServiceId = tourGuideRepository.getTourguideByEmail(request.getEmail()).getUserId();
+        return tourGuidBookingRepository.getByServiceProviderId(tourGuideServiceId)
                 .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
@@ -64,7 +65,7 @@ public class TourGuidBookingService {
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
                 .userContact(request.userContact())
-                .serviceProviderID(request.serviceProviderId())
+                .serviceProviderId(request.serviceProviderId())
                 .build();
     }
 
