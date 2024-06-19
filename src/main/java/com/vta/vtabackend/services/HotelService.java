@@ -3,6 +3,7 @@ package com.vta.vtabackend.services;
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.CreateHotelRequest;
+import com.vta.vtabackend.dto.CreateRoomRequest;
 import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.HotelRepository;
 import com.vta.vtabackend.repositories.UserRepository;
@@ -10,9 +11,7 @@ import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,18 +32,14 @@ public class HotelService {
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
                     .address(request.address())
+                    .photo(request.media().get(0))
                     .city(request.city())
-                    .photo(request.photo())
                     .hotline(request.hotline())
                     .mobile(request.mobileNo())
                     .email(request.email())
                     .whatsapp(request.whatsapp())
-                    .type(request.type())
                     .description(request.description())
-                    .facilities(request.facilities())
-                    .starRating(request.starRating())
                     .media(request.media())
-                    .rooms(request.rooms())
                     .pricePerNight(request.pricePerNight())
                     .userId(user.getId())
                     .build();
@@ -78,17 +73,12 @@ public class HotelService {
                 hotel.setName(request.name());
                 hotel.setAddress(request.address());
                 hotel.setCity(request.city());
-                hotel.setPhoto(request.photo());
                 hotel.setHotline(request.hotline());
                 hotel.setMobile(request.mobileNo());
                 hotel.setEmail(request.email());
                 hotel.setWhatsapp(request.whatsapp());
-                hotel.setType(request.type());
                 hotel.setDescription(request.description());
-                hotel.setFacilities(request.facilities());
                 hotel.setMedia(request.media());
-                hotel.setRooms(request.rooms());
-                hotel.setStarRating(request.starRating());
                 hotel.setPricePerNight(request.pricePerNight());
                 hotelRepository.save(hotel);
                 return "Hotel profile update successfully";
@@ -100,14 +90,14 @@ public class HotelService {
         }
     }
 
-    public String deleteHotel(String email, String token) {
+    public String deleteHotel(String id, String token) {
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
-        boolean exits = hotelRepository.existsByEmail(email);
-        Hotel hotel = hotelRepository.getHotelByEmail(email);
+        boolean exits = hotelRepository.findById(id).isPresent();
+        Hotel hotel = hotelRepository.findById(id).get();
         if(exits) {
             if(Objects.equals(user.getId(), hotel.getUserId())) {
-                hotelRepository.deleteByEmail(email);
+                hotelRepository.deleteById(id);
                 return "Delete hotel profile";
             } else {
                 return "You can't access to this profile";
@@ -119,5 +109,83 @@ public class HotelService {
 
     public String getHotelCount() {
         return String.valueOf(hotelRepository.count());
+    }
+
+    public String addRoom(CreateRoomRequest request, String token) {
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        Hotel hotel = hotelRepository.findByUserId(user.getId());
+        if (!Objects.isNull(hotel)) {
+            // Initialize the rooms list if it is null
+            List<Hotel.Room> rooms = hotel.getRooms();
+            if (rooms == null) {
+                rooms = new ArrayList<>();
+            }
+
+            // Create a new Room object from the request data
+            Hotel.Room newRoom = new Hotel.Room(
+                    request.type(),
+                    request.photo(),
+                    request.price(),
+                    request.facilities(),
+                    request.bedCount()
+            );
+
+            // Add the new room to the hotel's room list
+            rooms.add(newRoom);
+            hotel.setRooms(rooms);
+
+            // Save the updated hotel back to the database
+            hotelRepository.save(hotel);
+
+            return "Room added successfully!";
+        } else {
+            return "Hotel not found!";
+        }
+    }
+
+    public String deleteRoom(String roomId, String token) {
+
+        String userEmail = tokenService.extractEmail(token);
+
+        Users user = userRepository.getByEmail(userEmail);
+
+        Hotel hotel = hotelRepository.findByUserId(user.getId());
+
+        if (hotel != null) {
+
+            List<Hotel.Room> rooms = hotel.getRooms();
+
+            // Find and remove the room with the given roomId
+            boolean removed = rooms.removeIf(room -> room.getId().equals(roomId));
+
+            if (removed) {
+                // Update the hotel's rooms list and save it back to the database
+                hotel.setRooms(rooms);
+                hotelRepository.save(hotel);
+                return "Room deleted successfully!";
+            } else {
+                return "Room not found!";
+            }
+        } else {
+            return "Hotel not found!";
+        }
+    }
+
+    public List<Hotel.Room> getHotelRooms(String token) {
+        String userEmail = tokenService.extractEmail(token);
+
+        Users user = userRepository.getByEmail(userEmail);
+
+        Hotel hotel = hotelRepository.findByUserId(user.getId());
+
+        if (!Objects.isNull(hotel)) {
+            return hotel.getRooms();
+        } else {
+            throw new VTAException(
+                    VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getCode());
+        }
     }
 }

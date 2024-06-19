@@ -34,9 +34,9 @@ public class HotelBookingService {
 
         Hotel service = hotelRepository.getHotelByEmail(request.serviceProviderEmail());
         if(service!=null){
-              throw new VTAException(VTAException.Type.NOT_FOUND,
-                      ErrorStatusCodes.HOTEL_NOT_FOUND.getMessage(),
-                      ErrorStatusCodes.HOTEL_NOT_FOUND.getCode());
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.HOTEL_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.HOTEL_NOT_FOUND.getCode());
         }
         Users user = userRepository.findById(userId).orElseThrow(()->
                 new VTAException(VTAException.Type.NOT_FOUND,
@@ -83,4 +83,3 @@ public class HotelBookingService {
         return UUID.randomUUID() + "-" + System.currentTimeMillis();
     }
 }
-

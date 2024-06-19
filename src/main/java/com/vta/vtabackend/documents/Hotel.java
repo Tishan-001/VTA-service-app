@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.UUID;
 
 @Document(collection = "hotels")
 @Data
@@ -21,8 +22,6 @@ public class Hotel {
     private String mobile;
     private String email;
     private String whatsapp;
-    private String type;
-    private List<String> facilities;
     private List<Room> rooms;
     private Double pricePerNight;
     private Integer starRating;
@@ -38,7 +37,18 @@ public class Hotel {
         private String type;
         private String photo;
         private String price;
+        private List<String> facilities;
         private int bedCount;
         private Boolean isAvailable = true;
+
+        public Room(String type, String photo, String price, List<String> facilities, int bedCount) {
+            this.id = UUID.randomUUID().toString(); // Generate unique ID for the room
+            this.type = type;
+            this.photo = photo;
+            this.price = price;
+            this.facilities = facilities;
+            this.bedCount = bedCount;
+            this.isAvailable = true;
+        }
     }
 }
