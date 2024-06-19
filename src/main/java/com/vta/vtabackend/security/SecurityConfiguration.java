@@ -47,6 +47,9 @@ public class SecurityConfiguration {
             "/tourpackage/create",
             "/tourpackage/",
             "/tourpackage/{id}",
+            "/transports/",
+            "/transports/create",
+            "/transports/transport",
             "/images/upload",
             "/booking/create",
             "/hotel-booking/create",
@@ -86,7 +89,6 @@ public class SecurityConfiguration {
         config.addAllowedOrigin("http://localhost:3000");  // Allow specific origin
         config.addAllowedHeader("*");  // Allow all headers
         config.addAllowedMethod("*");  // Allow all HTTP methods
-
         source.registerCorsConfiguration("/**", config);
         return source;
     }

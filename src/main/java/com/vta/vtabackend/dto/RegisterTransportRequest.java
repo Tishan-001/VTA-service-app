@@ -11,8 +11,6 @@ public record RegisterTransportRequest(
         @NotNull @Email String email,
         @NotNull String mobile,
         @NotNull String address,
-        @NotNull Double price,
         @NotNull String description,
-        List<String> features,
-        @NotNull VehicleCategory vehicleCategory) {
+        String imageUrl) {
 }

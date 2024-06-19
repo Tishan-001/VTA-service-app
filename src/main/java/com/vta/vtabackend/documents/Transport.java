@@ -22,16 +22,26 @@ public class Transport {
     private String mobile;
     private String password;
     private String address;
-    private Double price;
-    private List<String> features;
+    private String imageUrl;
     private Double ratings;
     private Integer reviews;
     private String description;
-    private VehicleCategory vehicleCategory;
-
-    private String userId;
-    private final Role role = Role.TRANSPORT;
+    private Role role = Role.TRANSPORT;
     private boolean verified;
+
+    // Inner class for Room
+    @RequiredArgsConstructor
+    @Getter
+    @Setter
+    public static class Vehicle {
+        private String id;
+        private String type;
+        private VehicleCategory vehicleCategory;
+        private String photo;
+        private Double price;
+        private List<String> features;
+        private Integer ratings;
+    }
 
 }
 

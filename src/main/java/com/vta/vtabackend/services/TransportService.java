@@ -8,6 +8,7 @@ import com.vta.vtabackend.repositories.TransportRepository;
 import com.vta.vtabackend.repositories.UserRepository;
 import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +31,13 @@ public class TransportService {
         }
         else {
             Transport transport = Transport.builder()
-                    .id(UUID.randomUUID().toString())
+                    .id(user.getId())
                     .name(request.name())
                     .email(request.email())
                     .mobile(request.mobile())
-                    .vehicleCategory(request.vehicleCategory())
-                    .price(request.price())
                     .address(request.address())
                     .description(request.description())
-                    .userId(user.getId())
+                    .imageUrl(request.imageUrl())
                     .build();
             transportRepository.save(transport);
 
@@ -75,5 +74,36 @@ public class TransportService {
         } else {
             return "Tour Guide does not exist";
         }
+    }
+
+    public Transport getTransportByToken(String token){
+        try {
+            String userEmail = tokenService.extractEmail(token);
+            System.out.println("Extracted Email: " + userEmail);
+
+            Users user = userRepository.getByEmail(userEmail);
+            System.out.println("Retrieved User: " + user);
+
+            boolean exists = transportRepository.existsById(user.getId());
+            System.out.println("Transport Exists: " + exists);
+
+            if (exists) {
+                System.out.println("User found");
+                Transport transport = transportRepository.getTransportationById(user.getId());
+                System.out.println("Retrieved Transport: " + transport);
+
+                return transport;
+            } else {
+                System.out.println("Transport not found for user ID: " + user.getId());
+                return null;
+            }
+
+        } catch (Exception e) {
+            System.err.println("Exception occurred: " + e.getMessage());
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
+        }
+
     }
 }
