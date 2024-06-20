@@ -52,14 +52,16 @@ public class HotelService {
         return hotelRepository.findAll();
     }
 
-    public Hotel getHotel(String email) {
-        boolean exits = hotelRepository.existsByEmail(email);
-        if (!exits) {
+    public Hotel getHotel(String token) {
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        Hotel hotel = hotelRepository.findByUserId(user.getId());
+        if (Objects.isNull(hotel)) {
             throw new VTAException(VTAException.Type.NOT_FOUND,
                     ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getMessage(),
                     ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getCode());
         }
-        return hotelRepository.getHotelByEmail(email);
+        return hotel;
     }
 
     public String updateHotel(CreateHotelRequest request, String token) {
@@ -124,6 +126,7 @@ public class HotelService {
 
             // Create a new Room object from the request data
             Hotel.Room newRoom = new Hotel.Room(
+                    request.name(),
                     request.type(),
                     request.photo(),
                     request.price(),
@@ -187,5 +190,18 @@ public class HotelService {
                     ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getMessage(),
                     ErrorStatusCodes.HOTEL_PROFILE_NOT_FOUND.getCode());
         }
+    }
+
+    public Hotel.Room getRoom(String id) {
+        List<Hotel> hotels = hotelRepository.findAll();
+        for (Hotel hotel : hotels) {
+            List<Hotel.Room> rooms = hotel.getRooms();
+            for (Hotel.Room room : rooms) {
+                if (room.getId().equals(id)) {
+                    return room;
+                }
+            }
+        }
+        return null;
     }
 }

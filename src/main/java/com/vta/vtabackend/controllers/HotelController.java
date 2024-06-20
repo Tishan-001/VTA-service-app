@@ -30,8 +30,8 @@ public class HotelController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getHotel(@RequestBody String email) {
-        Hotel result = hotelService.getHotel(email);
+    public ResponseEntity<?> getHotel(@RequestHeader("Authorization") String token) {
+        Hotel result = hotelService.getHotel(token.substring(7));
         return ResponseEntity.ok(result);
     }
 
@@ -69,5 +69,11 @@ public class HotelController {
     public ResponseEntity<List<Hotel.Room>> getHotelRooms(@RequestHeader("Authorization") String token) {
         List<Hotel.Room> rooms = hotelService.getHotelRooms(token.substring(7));
         return ResponseEntity.ok(rooms);
+    }
+
+    @GetMapping("/get/room/{id}")
+    public ResponseEntity<?> getRoom(@PathVariable String id) {
+        Hotel.Room room = hotelService.getRoom(id);
+        return ResponseEntity.ok(room);
     }
 }

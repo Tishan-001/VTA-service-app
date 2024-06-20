@@ -34,6 +34,7 @@ public class Hotel {
     @Setter
     public static class Room {
         private String id;
+        private String name;
         private String type;
         private String photo;
         private String price;
@@ -41,8 +42,9 @@ public class Hotel {
         private int bedCount;
         private Boolean isAvailable = true;
 
-        public Room(String type, String photo, String price, List<String> facilities, int bedCount) {
+        public Room(String name,String type, String photo, String price, List<String> facilities, int bedCount) {
             this.id = UUID.randomUUID().toString(); // Generate unique ID for the room
+            this.name = name;
             this.type = type;
             this.photo = photo;
             this.price = price;
