@@ -3,6 +3,7 @@ package com.vta.vtabackend.controllers;
 import com.vta.vtabackend.documents.Hotel;
 import com.vta.vtabackend.dto.CreateHotelRequest;
 import com.vta.vtabackend.dto.CreateRoomRequest;
+import com.vta.vtabackend.dto.FilterRequest;
 import com.vta.vtabackend.services.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -81,5 +82,11 @@ public class HotelController {
     public ResponseEntity<?> getRoom(@PathVariable String id) {
         Hotel.Room room = hotelService.getRoom(id);
         return ResponseEntity.ok(room);
+    }
+
+    @PostMapping("/get/filter/hotel")
+    public ResponseEntity<List<Hotel>> getHotelFilter(@RequestBody FilterRequest request) {
+        List<Hotel> hotelList = hotelService.filterHotelList(request);
+        return ResponseEntity.ok(hotelList);
     }
 }

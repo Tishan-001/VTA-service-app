@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface HotelBookingRepository extends MongoRepository<HotelBooking,String> {
     List<HotelBooking> findByHotelId(String hotelId);
+
+    List<HotelBooking> findByRoomId(String id);
 }

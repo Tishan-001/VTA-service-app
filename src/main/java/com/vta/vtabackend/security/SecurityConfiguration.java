@@ -38,6 +38,7 @@ public class SecurityConfiguration {
             "/hotels/count",
             "/hotels/add/room",
             "/hotels/get/rooms",
+            "/hotels/get/filter/hotel",
             "/hotels/delete/room/{id}",
             "/hotels/get/room/{id}",
             "/tourguides/register",

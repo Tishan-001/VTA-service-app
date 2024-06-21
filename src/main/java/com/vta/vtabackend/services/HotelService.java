@@ -1,16 +1,20 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Hotel;
+import com.vta.vtabackend.documents.HotelBooking;
 import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.dto.CreateHotelRequest;
 import com.vta.vtabackend.dto.CreateRoomRequest;
+import com.vta.vtabackend.dto.FilterRequest;
 import com.vta.vtabackend.exceptions.VTAException;
+import com.vta.vtabackend.repositories.HotelBookingRepository;
 import com.vta.vtabackend.repositories.HotelRepository;
 import com.vta.vtabackend.repositories.UserRepository;
 import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -19,6 +23,7 @@ public class HotelService {
     private final HotelRepository hotelRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final HotelBookingRepository hotelBookingRepository;
 
     public String createHotel(CreateHotelRequest request, String token) {
         String userEmail = tokenService.extractEmail(token);
@@ -31,6 +36,7 @@ public class HotelService {
             Hotel hotel = Hotel.builder()
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
+                    .type(request.type())
                     .address(request.address())
                     .photo(request.media().get(0))
                     .city(request.city())
@@ -226,4 +232,52 @@ public class HotelService {
         hotelRepository.save(hotel);
         return "Room updated successfully!";
     }
+
+    public List<Hotel> filterHotelList(FilterRequest request) {
+        List<Hotel> hotels = hotelRepository.findAll();
+        List<Hotel> filteredHotels = new ArrayList<>();
+
+        // Parse check-in and check-out dates from the request
+        LocalDate checkInDate = LocalDate.parse(request.checkInDate());
+        LocalDate checkOutDate = LocalDate.parse(request.checkOutDate());
+
+        // Filter hotels by city
+        for (Hotel hotel : hotels) {
+            if (!hotel.getCity().equalsIgnoreCase(request.city())) {
+                continue;
+            }
+
+            boolean hotelHasAvailableRoom = false;
+            List<Hotel.Room> rooms = hotel.getRooms();
+
+            // Check each room's availability
+            for (Hotel.Room room : rooms) {
+                boolean roomIsAvailable = true;
+
+                List<HotelBooking> hotelBookings = hotelBookingRepository.findByRoomId(room.getId());
+                for (HotelBooking hotelBooking : hotelBookings) {
+                    LocalDate bookingCheckIn = LocalDate.parse(hotelBooking.getArrivalDate());
+                    LocalDate bookingCheckOut = LocalDate.parse(hotelBooking.getDepartureDate());
+
+                    // Check for overlapping bookings
+                    if (!(checkOutDate.isBefore(bookingCheckIn) || checkInDate.isAfter(bookingCheckOut))) {
+                        roomIsAvailable = false;
+                        break;
+                    }
+                }
+
+                if (roomIsAvailable) {
+                    hotelHasAvailableRoom = true;
+                    break;
+                }
+            }
+
+            if (hotelHasAvailableRoom) {
+                filteredHotels.add(hotel);
+            }
+        }
+
+        return filteredHotels;
+    }
+
 }
