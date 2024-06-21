@@ -13,7 +13,7 @@ public class FileUploadUtil {
 
     public static final long MAX_FILE_SIZE = 1024 * 1024 * 5;
 
-    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|png|gif|bmp|webp))$)";
+    public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|jpeg|png|gif|bmp|webp))$)";
 
     public static final String DATE_PATTERN = "yyyyMMddHHmmss";
 

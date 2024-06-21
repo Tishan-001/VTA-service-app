@@ -1,6 +1,8 @@
 package com.vta.vtabackend.controllers;
 
+import com.cloudinary.http44.api.Response;
 import com.vta.vtabackend.documents.Transport;
+import com.vta.vtabackend.dto.CreateVehicleRequest;
 import com.vta.vtabackend.dto.RegisterTransportRequest;
 import com.vta.vtabackend.services.TransportService;
 import jakarta.validation.Valid;
@@ -36,10 +38,29 @@ public class TransportController {
 //    }
     @GetMapping("/transport")
     public  ResponseEntity<?> getTransportDetails(@RequestHeader("Authorization") String token){
-        System.out.println(token);
         token = token.substring(7);
         Transport transport = transportService.getTransportByToken(token);
-        System.out.println("In controller"+transport);
         return ResponseEntity.ok(transport);
+    }
+
+    @PostMapping("/add/vehicle")
+    public ResponseEntity<?> addVehicle(@RequestBody CreateVehicleRequest request, @RequestHeader("Authorization")String token){
+        token = token.substring(7);
+        String response = transportService.saveVehicle(request,token);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/update/vehicle")
+    public ResponseEntity<?> updateVehicle(@RequestBody CreateVehicleRequest request, @RequestHeader("Authorization")String token){
+        token = token.substring(7);
+        String response = transportService.updateVehicle(request,token);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/vehicle")
+    public ResponseEntity<?> deleteVehicle(@RequestBody String vehicleId, @RequestHeader("Authorization") String token){
+        token=token.substring(7);
+        String response = transportService.deleteVehicle(vehicleId,token);
+        return ResponseEntity.ok(response);
     }
 }

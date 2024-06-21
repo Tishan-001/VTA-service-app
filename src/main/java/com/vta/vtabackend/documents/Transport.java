@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 @Getter
@@ -26,10 +27,17 @@ public class Transport {
     private Double ratings;
     private Integer reviews;
     private String description;
+    private List<Vehicle> vehicles;
     private Role role = Role.TRANSPORT;
     private boolean verified;
 
-    // Inner class for Room
+    public void removeVehicleById(String vehicleId) {
+        if (vehicles != null) {
+            vehicles.removeIf(vehicle -> vehicle.getId().toString().equals(vehicleId));
+        }
+    }
+
+    // Inner class for Vehicle
     @RequiredArgsConstructor
     @Getter
     @Setter
@@ -41,6 +49,17 @@ public class Transport {
         private Double price;
         private List<String> features;
         private Integer ratings;
+
+        public Vehicle(String type, VehicleCategory vehicleCategory, String photo, Double price, List<String> features) {
+            this.id = UUID.randomUUID().toString();
+            this.type = type;
+            this.vehicleCategory = vehicleCategory;
+            this.photo = photo;
+            this.price = price;
+            this.features = features;
+            this.ratings = 0;
+
+        }
     }
 
 }
