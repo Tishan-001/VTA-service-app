@@ -65,6 +65,12 @@ public class HotelController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update/room/{id}")
+    public ResponseEntity<?> updateRoom(@PathVariable String id, @RequestBody CreateRoomRequest request, @RequestHeader("Authorization") String token) {
+        String response = hotelService.updateRoom(id, request, token.substring(7));
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get/rooms")
     public ResponseEntity<List<Hotel.Room>> getHotelRooms(@RequestHeader("Authorization") String token) {
         List<Hotel.Room> rooms = hotelService.getHotelRooms(token.substring(7));

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class HotelBookingService {
@@ -18,9 +19,9 @@ public class HotelBookingService {
     private final HotelBookingRepository hotelBookingRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final MailService mailService;
 
-    public String createBooking(HotelBookingRequest request, String token){
-
+    public String createBooking(HotelBookingRequest request, String token) {
         if (tokenService.isTokenExpired(token)) {
             throw new VTAException(VTAException.Type.UNAUTHORIZED,
                     ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getMessage(),
@@ -48,6 +49,7 @@ public class HotelBookingService {
                 .bookingPrice(request.bookingPrice())
                 .build();
 
+        boolean roomFound = false;
         List<Hotel> hotels = hotelRepository.findAll();
         for (Hotel hotel : hotels) {
             List<Hotel.Room> rooms = hotel.getRooms();
@@ -57,25 +59,33 @@ public class HotelBookingService {
                     hotelBooking.setRoomName(room.getName());
                     hotelRepository.save(hotel);
                     hotelBooking.setHotelId(hotel.getId());
-                } else {
-                    throw new VTAException(VTAException.Type.NOT_FOUND,
-                            ErrorStatusCodes.HOTEL_NOT_FOUND.getMessage(),
-                            ErrorStatusCodes.HOTEL_NOT_FOUND.getCode());
+                    roomFound = true;
+                    break;
                 }
             }
+            if (roomFound) {
+                break;
+            }
+        }
+
+        if (!roomFound) {
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.HOTEL_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.HOTEL_NOT_FOUND.getCode());
         }
 
         try {
             hotelBookingRepository.save(hotelBooking);
+            mailService.bookingSuccess(hotelBooking.getContactEmail(), hotelBooking.getUserFirstName(), hotelBooking.getRoomName(), hotelBooking.getArrivalDate(), hotelBooking.getDepartureDate());
             return "Your booking is successful";
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new VTAException(VTAException.Type.EXTERNAL_SYSTEM_ERROR,
                     ErrorStatusCodes.BOOKING_FAILED.getMessage(),
                     ErrorStatusCodes.BOOKING_FAILED.getCode());
         }
     }
-    public List<HotelBooking> getBookingDetails(String token){
+
+    public List<HotelBooking> getBookingDetails(String token) {
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
 
@@ -83,5 +93,4 @@ public class HotelBookingService {
 
         return hotelBookingRepository.findByHotelId(hotel.getId());
     }
-
 }

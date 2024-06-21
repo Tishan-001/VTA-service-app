@@ -204,4 +204,26 @@ public class HotelService {
         }
         return null;
     }
+
+    public String updateRoom(String id, CreateRoomRequest request, String token) {
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        Hotel hotel = hotelRepository.findByUserId(user.getId());
+        if (!Objects.isNull(hotel)) {
+            List<Hotel.Room> rooms = hotel.getRooms();
+            for (Hotel.Room room : rooms) {
+                if (room.getId().equals(id)) {
+                    room.setName(request.name());
+                    room.setType(request.type());
+                    room.setPhoto(request.photo());
+                    room.setPrice(request.price());
+                    room.setFacilities(request.facilities());
+                    room.setBedCount(request.bedCount());
+                }
+            }
+        }
+
+        hotelRepository.save(hotel);
+        return "Room updated successfully!";
+    }
 }
