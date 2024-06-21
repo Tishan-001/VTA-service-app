@@ -39,6 +39,7 @@ public class SecurityConfiguration {
             "/hotels/add/room",
             "/hotels/get/rooms",
             "/hotels/delete/room/{id}",
+            "/hotels/get/room/{id}",
             "/tourguides/register",
             "/tourguides/",
             "/tourguides/tourguide/{id}",

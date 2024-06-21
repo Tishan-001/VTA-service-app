@@ -19,7 +19,7 @@ public class HotelBookingController {
     }
 
     @GetMapping("/get-bookings")
-    public ResponseEntity<?> getBookingsByEmail(@RequestBody EmailRequest request){
-        return ResponseEntity.ok(hotelBookingService.getBookingsByServiceProviderEmail(request));
+    public ResponseEntity<?> getBookingsByEmail(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(hotelBookingService.getBookingDetails(token.substring(7)));
     }
 }
