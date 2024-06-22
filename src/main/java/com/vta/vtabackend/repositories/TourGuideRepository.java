@@ -11,4 +11,6 @@ public interface TourGuideRepository extends MongoRepository<TourGuide, String> 
     TourGuide getTourguideByEmail(String email);
 
     TourGuide getTourguideById(String id);
+
+    TourGuide getTourguideByUserId(String id);
 }

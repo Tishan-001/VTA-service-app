@@ -15,12 +15,15 @@ public class TourGuideBooking {
     @Id
     private String bookingId;
     private String userId;
-    private String userContact;
-    private String Location;
-    private String bookingStartDate;
-    private String bookingEndDate;
-    private String bookingPrice;
-    private final BookingType bookingType =BookingType.TourGuide;
-    private String serviceProviderId;
-
+    private String tourGuideId;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private String startDate;
+    private String startTime;
+    private String endDate;
+    private String endTime;
+    private String specialRequest;
+    private String price;
 }

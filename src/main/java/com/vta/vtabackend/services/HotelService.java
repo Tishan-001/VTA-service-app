@@ -37,6 +37,7 @@ public class HotelService {
                     .id(UUID.randomUUID().toString())
                     .name(request.name())
                     .type(request.type())
+                    .category(request.category())
                     .address(request.address())
                     .photo(request.media().get(0))
                     .city(request.city())
@@ -79,6 +80,8 @@ public class HotelService {
         if(exits) {
             if(Objects.equals(user.getId(), hotel.getUserId())) {
                 hotel.setName(request.name());
+                hotel.setType(request.type());
+                hotel.setCategory(request.category());
                 hotel.setAddress(request.address());
                 hotel.setCity(request.city());
                 hotel.setHotline(request.hotline());

@@ -4,7 +4,6 @@ import com.vta.vtabackend.documents.*;
 import com.vta.vtabackend.dto.TourGuideBookingRequest;
 import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.*;
-import com.vta.vtabackend.response.EmailRequest;
 import com.vta.vtabackend.utils.ErrorStatusCodes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,58 +18,47 @@ public class TourGuidBookingService {
     private final TourGuideRepository tourGuideRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final MailService mailService;
 
     public String createBooking(TourGuideBookingRequest request, String token){
-
-        if (tokenService.isTokenExpired(token)) {
-            throw new VTAException(VTAException.Type.UNAUTHORIZED,
-                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getMessage(),
-                    ErrorStatusCodes.TOKEN_EXPIRED_PLEASE_TRY_AGAIN.getCode());
-        }
         String userEmail = tokenService.extractEmail(token);
         Users user = userRepository.getByEmail(userEmail);
 
-        TourGuide service = tourGuideRepository.getTourguideById(request.serviceProviderId());
-        if(service==null){
+        TourGuide tourGuide = tourGuideRepository.getTourguideById(request.tourGuideId());
+
+        TourGuideBooking tourGuideBooking = TourGuideBooking.builder()
+                .bookingId(UUID.randomUUID().toString())
+                .userId(user.getId())
+                .tourGuideId(tourGuide.getId())
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .email(request.email())
+                .phoneNumber(request.phoneNumber())
+                .startDate(request.startDate())
+                .startTime(request.startTime())
+                .endDate(request.endDate())
+                .endTime(request.endTime())
+                .specialRequest(request.specialRequest())
+                .price(request.bookingPrice())
+                .build();
+
+        tourGuidBookingRepository.save(tourGuideBooking);
+        mailService.tourguideBooking(request.email(), request.firstName(), tourGuide.getName(), request.startDate(), request.startTime(), request.endDate(), request.endTime());
+        return "Booking Successful";
+    }
+    public List<TourGuideBooking> getBookingsByEmail(String token){
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+
+        TourGuide tourGuide = tourGuideRepository.getTourguideByUserId(user.getId());
+
+        if(tourGuide == null){
             throw new VTAException(VTAException.Type.NOT_FOUND,
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
+        } else {
+            return tourGuidBookingRepository.findAllByTourGuideId(tourGuide.getId());
         }
-
-        try {
-            TourGuideBooking tourGuideBooking = buildTourGuideBooking(request,user.getId());
-            tourGuidBookingRepository.save(tourGuideBooking);
-            return "Your booking is successful";
-        }
-        catch (Exception e){
-            throw new VTAException(VTAException.Type.EXTERNAL_SYSTEM_ERROR,
-                    ErrorStatusCodes.BOOKING_FAILED.getMessage(),
-                    ErrorStatusCodes.BOOKING_FAILED.getCode());
-        }
-    }
-    public List<TourGuideBooking> getBookingsByEmail(EmailRequest request){
-        String tourGuideServiceId = tourGuideRepository.getTourguideByEmail(request.getEmail()).getUserId();
-        return tourGuidBookingRepository.getByServiceProviderId(tourGuideServiceId)
-                .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
-                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
-                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
-    }
-
-    private TourGuideBooking buildTourGuideBooking(TourGuideBookingRequest request, String userId) {
-        return TourGuideBooking.builder()
-                .bookingId(generateBookingId())
-                .userId(userId)
-                .Location(request.Location())
-                .bookingStartDate(request.bookingStartDate())
-                .bookingEndDate(request.bookingEndDate())
-                .bookingPrice(request.bookingPrice())
-                .userContact(request.userContact())
-                .serviceProviderId(request.serviceProviderId())
-                .build();
-    }
-
-    private String generateBookingId() {
-        return UUID.randomUUID() + "-" + System.currentTimeMillis();
     }
 }
 

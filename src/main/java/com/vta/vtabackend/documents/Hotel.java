@@ -15,6 +15,7 @@ public class Hotel {
     private final String id;
     private String name;
     private String type;
+    private String category;
     private String description;
     private String photo;
     private String address;

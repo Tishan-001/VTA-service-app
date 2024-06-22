@@ -6,6 +6,7 @@ import java.util.List;
 
 public record CreateHotelRequest(@NotNull String name,
                                  @NotNull String type,
+                                 @NotNull String category,
                                  @NotNull String address,
                                  @NotNull String city,
                                  @NotNull String hotline,

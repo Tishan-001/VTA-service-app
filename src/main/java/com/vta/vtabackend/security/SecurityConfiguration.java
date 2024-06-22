@@ -47,7 +47,7 @@ public class SecurityConfiguration {
             "/tourguides/update",
             "/tourguides/delete",
             "/tourguides/count",
-            "/tourguides/guider/{email}",
+            "/tourguides/guider",
             "/tourpackage/create",
             "/tourpackage/",
             "/tourpackage/{id}",

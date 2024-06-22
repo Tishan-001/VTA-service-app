@@ -59,11 +59,53 @@ public class MailService {
                 "      <font style=\"color:green;font-weight:bold;\">" + roomName + "</font><br/>" +
                 "      <br/>" +
                 "      <font style=\"color:red;font-weight:bold;\">Arrival Date:</font> <font style=\"color:green;font-weight:bold;\">" +
-                arrivalDate + "</font>" +
+                arrivalDate + "</font><br/>" +
                 "      <br/>" +
                 "      <font style=\"color:red;font-weight:bold;\">Departure Date:</font> <font style=\"color:green;font-weight:bold;\">" +
-                departureDate + "</font>" +
+                departureDate + "</font><br/>" +
+                "      <br/>" + "<br/>" +
+                "      Thank you for your trust in us.<br/><br/>" +
+                "      We look forward to serving you.<br/><br/> <font style=\"color:green;font-weight:bold;\">VTA service</font>" +
+                "    </p>" +
+                "  </body>" +
+                "</html>";
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("noreply@vta.com");
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlTextMessage, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void tourguideBooking(String recipientEmail, String name, String guiderName, String startDate, String startTime, String endDate, String endTime) {
+        String subject = "Booking Confirmation - VTA";
+        String htmlTextMessage = "<html>" +
+                "  <body>" +
+                "    <p>" +
+                "      Dear " + name + ",<br/><br/>" +
+                "      Thank you for choosing our service.<br/><br/>" +
+                "      Your booking has been successfully scheduled and is confirmed." +
+                "      <br/><h6>Please note that this email keep your.</h6>" +
                 "      <br/>" +
+                "      Here are your Booking Details:<br/>" +
+                "      <br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Room Name:</font>" +
+                "      <font style=\"color:green;font-weight:bold;\">" + guiderName + "</font><br/>" +
+                "      <br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Arrival Date:</font> <font style=\"color:green;font-weight:bold;\">" +
+                startDate + "," + startTime + "</font><br/>" +
+                "      <br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Departure Date:</font> <font style=\"color:green;font-weight:bold;\">" +
+                endDate + "," + endTime + "</font><br/>" +
+                "      <br/>" + "<br/>" +
                 "      Thank you for your trust in us.<br/><br/>" +
                 "      We look forward to serving you.<br/><br/> <font style=\"color:green;font-weight:bold;\">VTA service</font>" +
                 "    </p>" +

@@ -108,13 +108,15 @@ public class TourGuideService {
         return String.valueOf(tourGuideRepository.count());
     }
 
-    public TourGuide getTourguideByEmail(String email) {
-        boolean exists = tourGuideRepository.existsByEmail(email);
-        if (!exists) {
+    public TourGuide getTourguideByEmail(String token) {
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        TourGuide guide = tourGuideRepository.getTourguideByUserId(user.getId());
+        if (guide == null) {
             throw new VTAException(VTAException.Type.NOT_FOUND,
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getMessage(),
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
         }
-        return tourGuideRepository.getTourguideByEmail(email);
+        return guide;
     }
 }
