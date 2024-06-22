@@ -20,7 +20,7 @@ public class TourGuideBookingController {
     }
 
     @GetMapping("/get-bookings")
-    public ResponseEntity<?> getBookingsByEmail(@RequestBody EmailRequest request){
-        return ResponseEntity.ok(tourGuidBookingService.getBookingsByEmail(request));
+    public ResponseEntity<?> getBookingsByEmail(@RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(tourGuidBookingService.getBookingsByEmail(token.substring(7)));
     }
 }

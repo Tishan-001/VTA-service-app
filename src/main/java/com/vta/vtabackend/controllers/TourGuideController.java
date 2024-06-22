@@ -34,8 +34,8 @@ public class TourGuideController {
         return ResponseEntity.ok(tourGuide);
     }
 
-    @GetMapping("/update")
-    public ResponseEntity<?> updateTourGuide(@Valid @RequestBody RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
+    @PutMapping("/update")
+    public ResponseEntity<?> updateTourGuide(@RequestBody RegisterTourGuideRequest request, @RequestHeader("Authorization") String token) {
         String result = tourGuideService.updateTourGuide(request, token.substring(7));
         return ResponseEntity.ok(result);
     }
@@ -52,9 +52,9 @@ public class TourGuideController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/guider/{email}")
-    public ResponseEntity<?> guiderTourGuide(@PathVariable String email) {
-        TourGuide tourGuide = tourGuideService.getTourguideByEmail(email);
+    @GetMapping("/guider")
+    public ResponseEntity<?> guiderTourGuide(@RequestHeader("Authorization") String token) {
+        TourGuide tourGuide = tourGuideService.getTourguideByEmail(token.substring(7));
         return ResponseEntity.ok(tourGuide);
     }
 }
