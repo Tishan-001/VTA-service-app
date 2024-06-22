@@ -54,6 +54,7 @@ public class SecurityConfiguration {
             "/transports/",
             "/transports/create",
             "/transports/transport",
+            "/transports/transport-id/{id}",
             "/transports/add/vehicle",
             "/transports/update/vehicle",
             "/transports/delete/vehicle",

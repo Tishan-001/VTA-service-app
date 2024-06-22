@@ -60,6 +60,7 @@ public class TransportService {
                     ErrorStatusCodes.TRANSPORT_NOT_FOUND.getMessage(),
                     ErrorStatusCodes.TRANSPORT_NOT_FOUND.getCode());
         }else{
+            System.out.println("trandport id:" +id);
             return transportRepository.getTransportationById(id);
         }
 

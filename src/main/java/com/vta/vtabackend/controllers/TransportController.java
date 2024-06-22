@@ -31,11 +31,11 @@ public class TransportController {
         return ResponseEntity.ok(transports);
     }
 
-//    @GetMapping("/transport/{id}")
-//    public ResponseEntity<?> getTransportDetails(@PathVariable("id") String id) {
-//        Transport transport = transportService.getTransport(id);
-//        return ResponseEntity.ok(transport);
-//    }
+    @GetMapping("/transport-id/{id}")
+    public ResponseEntity<?> getTransportDetailsById(@PathVariable("id") String id) {
+        Transport transport = transportService.getTransport(id);
+        return ResponseEntity.ok(transport);
+    }
     @GetMapping("/transport")
     public  ResponseEntity<?> getTransportDetails(@RequestHeader("Authorization") String token){
         token = token.substring(7);

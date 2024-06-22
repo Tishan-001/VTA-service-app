@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class   TransportBooking {
         @Id
         private String bookingId;
+        private String serviceProviderId;
+        private String vehicleId;
         private String userId;
         private String pickUpLocation;
         private String dropOffLocation;
@@ -20,7 +22,7 @@ public class   TransportBooking {
         private String bookingEndDate;
         private String bookingPrice;
         private final BookingType bookingType = BookingType.Transport;
-        private String serviceProviderId;
+        
 
 }
 

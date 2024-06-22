@@ -69,6 +69,7 @@ public class TransportBookingService {
                 .bookingEndDate(request.bookingEndDate())
                 .bookingPrice(request.bookingPrice())
                 .serviceProviderId(request.serviceProviderId())
+                .vehicleId(request.vehicleID())
                 .build();
     }
 
