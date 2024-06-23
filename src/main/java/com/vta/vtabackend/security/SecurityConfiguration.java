@@ -55,9 +55,12 @@ public class SecurityConfiguration {
             "/transports/create",
             "/transports/transport",
             "/transports/transport-id/{id}",
-            "/transports/add/vehicle",
-            "/transports/update/vehicle",
-            "/transports/delete/vehicle",
+            "/vehicle/",
+            "/vehicle/create",
+            "/vehicle/by-transport",
+            "/vehicle/add",
+            "/vehicle/update",
+            "/vehicle/delete",
             "/images/upload",
             "/booking/create",
             "/hotel-booking/create",
@@ -65,7 +68,9 @@ public class SecurityConfiguration {
             "/tour-guide-booking/create",
             "/tour-guide-booking/get-bookings",
             "/transport-booking/create",
-            "/transport-booking/get-bookings",
+            "/transport-booking/get-bookings-service",
+            "/transport-booking/get-bookings-user",
+
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;

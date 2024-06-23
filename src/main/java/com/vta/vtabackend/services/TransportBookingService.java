@@ -41,7 +41,7 @@ public class TransportBookingService {
                     ErrorStatusCodes.TOURGUIDE_NOT_FOUND.getCode());
         }
         try {
-            TransportBooking transportBooking = buildTransportBooking(request,user.getId());
+            TransportBooking transportBooking = buildTransportBooking(request,user.getId(),userEmail);
             transportBookingRepository.save(transportBooking);
             return "Your booking is successful";
         }
@@ -51,18 +51,31 @@ public class TransportBookingService {
                     ErrorStatusCodes.BOOKING_FAILED.getCode());
         }
     }
-    public List<TransportBooking> getBookingsByEmail(EmailRequest request){
-        String serviceProviderId = transportRepository.getTransportationByEmail(request.getEmail()).getId();
-        return transportBookingRepository.getByServiceProviderId(serviceProviderId)
+    public List<TransportBooking> getBookingsService(String token){
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        return transportBookingRepository.getByServiceProviderId(user.getId())
                 .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
                         ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
     }
 
-    private TransportBooking buildTransportBooking(TransportBookingRequest request, String userId) {
+    public List<TransportBooking> getBookingsByUser(String token){
+        String userEmail = tokenService.extractEmail(token);
+        Users user = userRepository.getByEmail(userEmail);
+        return transportBookingRepository.getByUserId(user.getId())
+                .orElseThrow(()-> new VTAException(VTAException.Type.NOT_FOUND,
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getMessage(),
+                        ErrorStatusCodes.BOOKING_NOT_AVAILABLE.getCode()));
+    }
+
+    private TransportBooking buildTransportBooking(TransportBookingRequest request, String userId, String userEmail) {
         return TransportBooking.builder()
                 .bookingId(generateBookingId())
                 .userId(userId)
+                .userName(request.userName())
+                .contactNo(request.contactNo())
+                .userEmail(userEmail)
                 .pickUpLocation(request.pickUpLocation())
                 .dropOffLocation(request.dropOffLocation())
                 .bookingStartDate(request.bookingStartDate())
@@ -70,6 +83,7 @@ public class TransportBookingService {
                 .bookingPrice(request.bookingPrice())
                 .serviceProviderId(request.serviceProviderId())
                 .vehicleId(request.vehicleID())
+                .withDriver(request.withDriver())
                 .build();
     }
 

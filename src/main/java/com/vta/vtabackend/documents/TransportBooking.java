@@ -16,12 +16,16 @@ public class   TransportBooking {
         private String serviceProviderId;
         private String vehicleId;
         private String userId;
-        private String pickUpLocation;
-        private String dropOffLocation;
+        private String userName;
+        private String userEmail;
+        private String contactNo;
         private String bookingStartDate;
         private String bookingEndDate;
         private String bookingPrice;
-        private final BookingType bookingType = BookingType.Transport;
+        private Boolean withDriver;
+        private String pickUpLocation = "Not Relevant";
+        private String dropOffLocation = "Not Relevant";
+        private BookingType bookingType = BookingType.Transport;
         
 
 }

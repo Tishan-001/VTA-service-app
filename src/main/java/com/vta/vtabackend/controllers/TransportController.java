@@ -43,24 +43,5 @@ public class TransportController {
         return ResponseEntity.ok(transport);
     }
 
-    @PostMapping("/add/vehicle")
-    public ResponseEntity<?> addVehicle(@RequestBody CreateVehicleRequest request, @RequestHeader("Authorization")String token){
-        token = token.substring(7);
-        String response = transportService.saveVehicle(request,token);
-        return ResponseEntity.ok(response);
-    }
 
-    @PutMapping("/update/vehicle")
-    public ResponseEntity<?> updateVehicle(@RequestBody CreateVehicleRequest request, @RequestHeader("Authorization")String token){
-        token = token.substring(7);
-        String response = transportService.updateVehicle(request,token);
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/delete/vehicle")
-    public ResponseEntity<?> deleteVehicle(@RequestBody String vehicleId, @RequestHeader("Authorization") String token){
-        token=token.substring(7);
-        String response = transportService.deleteVehicle(vehicleId,token);
-        return ResponseEntity.ok(response);
-    }
 }
