@@ -43,5 +43,11 @@ public class TransportController {
         return ResponseEntity.ok(transport);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<?> countTransport() {
+        String response = transportService.getTourGuidesCount();
+        return ResponseEntity.ok(response);
+    }
+
 
 }

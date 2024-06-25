@@ -56,6 +56,7 @@ public class SecurityConfiguration {
             "/transports/",
             "/transports/create",
             "/transports/transport",
+            "/transports/count",
             "/transports/transport-id/{id}",
             "/vehicle/",
             "/vehicle/create",

@@ -108,4 +108,7 @@ public class TransportService {
     }
 
 
+    public String getTourGuidesCount() {
+        return String.valueOf(transportRepository.count());
+    }
 }
