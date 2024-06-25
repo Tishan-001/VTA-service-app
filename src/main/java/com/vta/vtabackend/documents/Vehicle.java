@@ -19,10 +19,11 @@ public class Vehicle {
     private VehicleCategory vehicleCategory;
     private String photo;
     private Double price;
+    private String location;
     private List<String> features;
     private Integer ratings;
 
-    public Vehicle(String transportId, String type, VehicleCategory vehicleCategory, String photo, Double price, List<String> features) {
+    public Vehicle(String transportId, String type, VehicleCategory vehicleCategory, String photo, Double price, List<String> features,String location) {
         this.id = UUID.randomUUID().toString();
         this.transportId = transportId;
         this.type = type;
@@ -30,6 +31,7 @@ public class Vehicle {
         this.photo = photo;
         this.price = price;
         this.features = features;
+        this.location = location;
         this.ratings = 0;
     }
 }

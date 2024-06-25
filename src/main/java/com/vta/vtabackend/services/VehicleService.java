@@ -1,18 +1,23 @@
 package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Transport;
+import com.vta.vtabackend.documents.TransportBooking;
 import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.documents.Vehicle;
 import com.vta.vtabackend.dto.CreateVehicleRequest;
+import com.vta.vtabackend.dto.VehicleAvailableRequest;
+import com.vta.vtabackend.repositories.TransportBookingRepository;
 import com.vta.vtabackend.repositories.TransportRepository;
 import com.vta.vtabackend.repositories.UserRepository;
 import com.vta.vtabackend.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleService {
@@ -20,6 +25,7 @@ public class VehicleService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final VehicleRepository vehicleRepository;
+    private TransportBookingRepository transportBookingRepository;
 
     @Autowired
     public VehicleService(TransportRepository transportRepository, UserRepository userRepository, TokenService tokenService, VehicleRepository vehicleRepository) {
@@ -51,7 +57,8 @@ public class VehicleService {
                     request.vehicleCategory(),
                     request.photo(),
                     request.price(),
-                    request.features()
+                    request.features(),
+                   request.location()
             );
             vehicleRepository.save(newVehicle);
             return "Vehicle added successfully!";
@@ -107,5 +114,17 @@ public class VehicleService {
         } else {
             return "Vehicle not found.";
         }
+    }
+
+    public List<Vehicle> findAvailableVehicles(VehicleAvailableRequest request) {
+        List<Vehicle> vehicles = vehicleRepository.findVehiclesByCategoryAndLocation(request.category(), request.location());
+        return vehicles;
+//        return vehicles.stream()
+//                .filter(vehicle -> {
+//                    System.out.println("vehicle: "+vehicle);
+//                    List<TransportBooking> bookings = transportBookingRepository.findBookedVehicles(vehicle.getId(), request.bookingStartDate(), request.bookingEndDate());
+//                    return bookings.isEmpty();
+//                })
+//                .collect(Collectors.toList());
     }
 }
