@@ -169,4 +169,52 @@ public class MailService {
     private String generateForgotPasswordLink(String token) {
         return "<a href='http://localhost:5173/Newpassord?token=" + token + "' target='_blank' style='font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 3px; display: inline-block; background-color: #007bff;'>Reset Password</a>";
     }
+
+    public void transportBooking(String recipientEmail, String name, String startDate, String endDate, String price, String pickupLocation, String dropLocation, String ownerCantactNo) {
+        String subject = "Booking Confirmation - VTA";
+        String htmlTextMessage = "<html>" +
+                "  <body>" +
+                "    <p>" +
+                "      Dear " + name + ",<br/><br/>" +
+                "      Thank you for choosing our service.<br/><br/>" +
+                "      Your booking has been successfully scheduled and is confirmed." +
+                "      <br/><h6>Please note that this email keep your.</h6>" +
+                "      <br/>" +
+                "      Here are your Booking Details:<br/>" +
+                "      <br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Start Date:</font> <font style=\"color:green;font-weight:bold;\">" +
+                startDate + "</font><br/>" +
+                "      <br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">End Date:</font> <font style=\"color:green;font-weight:bold;\">" +
+                endDate + "</font><br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Booking Price:</font> <font style=\"color:green;font-weight:bold;\">" +
+                price + "</font><br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">PickUp Location:</font> <font style=\"color:green;font-weight:bold;\">" +
+                pickupLocation + "</font><br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Drop Location:</font> <font style=\"color:green;font-weight:bold;\">" +
+                dropLocation + "</font><br/>" +
+                "      <font style=\"color:red;font-weight:bold;\">Owner Contact Number:</font> <font style=\"color:green;font-weight:bold;\">" +
+                ownerCantactNo + "</font><br/>" +
+                "      <br/>" + "<br/>" +
+
+                "      Thank you for your trust in us.<br/><br/>" +
+                "      We look forward to serving you.<br/><br/> <font style=\"color:green;font-weight:bold;\">VTA service</font>" +
+                "    </p>" +
+                "  </body>" +
+                "</html>";
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("noreply@vta.com");
+            helper.setTo(recipientEmail);
+            helper.setSubject(subject);
+            helper.setText(htmlTextMessage, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }

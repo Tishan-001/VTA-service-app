@@ -23,6 +23,8 @@ public class TransportBookingService {
     private final TransportBookingRepository transportBookingRepository;
     private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final MailService mailService;
+
     public String createBooking(TransportBookingRequest request, String token){
 
         if (tokenService.isTokenExpired(token)) {
@@ -43,6 +45,7 @@ public class TransportBookingService {
         try {
             TransportBooking transportBooking = buildTransportBooking(request,user.getId(),userEmail);
             transportBookingRepository.save(transportBooking);
+            mailService.transportBooking(userEmail, user.getName(), request.bookingStartDate(), request.bookingEndDate(), request.bookingPrice(), request.pickUpLocation(), request.dropOffLocation(), user.getMobile());
             return "Your booking is successful";
         }
         catch (Exception e){
