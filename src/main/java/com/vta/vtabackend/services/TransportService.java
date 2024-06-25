@@ -82,7 +82,9 @@ public class TransportService {
             return "Tour Guide does not exist";
         }
     }
-
+    public String getTransportCount() {
+        return String.valueOf(transportRepository.count());
+    }
     public Transport getTransportByToken(String token){
         try {
             String userEmail = tokenService.extractEmail(token);
