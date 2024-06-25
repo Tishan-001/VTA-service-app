@@ -30,6 +30,8 @@ public class SecurityConfiguration {
             "/auth/login/email",
             "/auth/login/admin",
             "/auth/count",
+            "/auth/forgot/password",
+            "/auth/forgot/reset/password",
             "/hotels/create",
             "/hotels/",
             "/hotels/update",

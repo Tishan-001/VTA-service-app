@@ -52,12 +52,12 @@ public class AuthController {
     }
 
     @PostMapping("/forgot/password")
-    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotEmail email) {
         String result = authService.forgotPassword(email);
         return ResponseEntity.ok(Map.of("message", result));
     }
 
-    @PostMapping("/rest/password")
+    @PostMapping("/forgot/reset/password")
     public ResponseEntity<?> restPassword(@RequestBody String password, @RequestHeader("Authorization") String token) {
         String response = authService.resetPassword(password, token.substring(7));
         return ResponseEntity.ok(Map.of("message", response));

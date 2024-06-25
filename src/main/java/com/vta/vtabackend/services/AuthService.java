@@ -2,10 +2,7 @@ package com.vta.vtabackend.services;
 
 import com.vta.vtabackend.documents.Users;
 import com.vta.vtabackend.documents.UserVerificationCode;
-import com.vta.vtabackend.dto.AuthResponse;
-import com.vta.vtabackend.dto.LoginWithEmailRequest;
-import com.vta.vtabackend.dto.OTPRequest;
-import com.vta.vtabackend.dto.RegisterWithEmailRequest;
+import com.vta.vtabackend.dto.*;
 import com.vta.vtabackend.enums.Role;
 import com.vta.vtabackend.exceptions.VTAException;
 import com.vta.vtabackend.repositories.UserRepository;
@@ -167,8 +164,8 @@ public class AuthService {
         return userRepository.getByEmail(userEmail);
     }
 
-    public String forgotPassword(String email) {
-        Users user = loadAccountByEmail(email);
+    public String forgotPassword(ForgotEmail email) {
+        Users user = loadAccountByEmail(email.email());
         if (user == null) {
             throw new VTAException(VTAException.Type.NOT_FOUND,
                     ErrorStatusCodes.USER_NOT_FOUND.getMessage(),

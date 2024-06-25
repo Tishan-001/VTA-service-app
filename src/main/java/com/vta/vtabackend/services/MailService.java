@@ -137,7 +137,7 @@ public class MailService {
         String htmlTextMessage = "<html>" +
                 "<body style='font-family: Arial, sans-serif;'>" +
                 "<h2 style='color: #007bff;'>Dear " + user.getName() + ",</h2>" +
-                "<p>We have received a request to reset the password for your CirclePos System account.</p>" +
+                "<p>We have received a request to reset the password for your VTA System account.</p>" +
                 "<p>To proceed with the password reset, please click on the button below:</p>" +
                 "<table cellpadding='0' cellspacing='0' border='0'>" +
                 "<tr>" +
