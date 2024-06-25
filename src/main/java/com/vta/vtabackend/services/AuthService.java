@@ -166,5 +166,28 @@ public class AuthService {
     public Users loadAccountByEmail(String userEmail) {
         return userRepository.getByEmail(userEmail);
     }
+
+    public String forgotPassword(String email) {
+        Users user = loadAccountByEmail(email);
+        if (user == null) {
+            throw new VTAException(VTAException.Type.NOT_FOUND,
+                    ErrorStatusCodes.USER_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.USER_NOT_FOUND.getCode());
+        }
+        mailService.sendForgotPasswordEmail(user);
+        return "Forgot password email sent to your email";
+    }
+
+    public String resetPassword(String password, String token) {
+        Users user = loadAccountByEmail(token);
+        if (user == null) {
+            throw new VTAException(VTAException.Type.UNAUTHORIZED,
+                    ErrorStatusCodes.USER_NOT_FOUND.getMessage(),
+                    ErrorStatusCodes.USER_NOT_FOUND.getCode());
+        }
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        return "Password reset successfully";
+    }
 }
 

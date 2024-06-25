@@ -1,5 +1,6 @@
 package com.vta.vtabackend.services;
 
+import com.vta.vtabackend.documents.Users;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,6 +13,7 @@ import jakarta.mail.MessagingException;
 @RequiredArgsConstructor
 public class MailService {
     private final JavaMailSender mailSender;
+    private final TokenService tokenService;
 
     public void sendOtp(String otp, String email) {
         String subject = "Email Verification Code";
@@ -125,5 +127,46 @@ public class MailService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendForgotPasswordEmail(Users user) {
+        String token = tokenService.generateToken(user);
+
+        String subject = "Password Reset Request for VTA System";
+
+        String htmlTextMessage = "<html>" +
+                "<body style='font-family: Arial, sans-serif;'>" +
+                "<h2 style='color: #007bff;'>Dear " + user.getName() + ",</h2>" +
+                "<p>We have received a request to reset the password for your CirclePos System account.</p>" +
+                "<p>To proceed with the password reset, please click on the button below:</p>" +
+                "<table cellpadding='0' cellspacing='0' border='0'>" +
+                "<tr>" +
+                "<td align='center' bgcolor='#007bff' style='border-radius: 3px;'>" +
+                ""+generateForgotPasswordLink(token)+"</td>" +
+                "</td>" +
+                "</tr>" +
+                "</table>" +
+                "<p>If you did not initiate this password reset request, please disregard this email.</p>" +
+                "<p>Best Regards,<br/>VTA System Administration</p>" +
+                "</body>" +
+                "</html>";
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("noreply@vta.com");
+            helper.setTo(user.getEmail());
+            helper.setSubject(subject);
+            helper.setText(htmlTextMessage, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String generateForgotPasswordLink(String token) {
+        return "<a href='http://localhost:5173/Newpassord?token=" + token + "' target='_blank' style='font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; padding: 15px 25px; border-radius: 3px; display: inline-block; background-color: #007bff;'>Reset Password</a>";
     }
 }

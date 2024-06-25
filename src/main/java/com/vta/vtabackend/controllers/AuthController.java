@@ -22,32 +22,44 @@ public class AuthController {
     }
 
     @PostMapping("/register/email/verify")
-    private ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
+    public ResponseEntity<?> verifyEmail(@RequestBody @Valid VerifyOTPRequest request) {
         AuthResponse result = authService.verifyEmailOtp(request.source(), request.otp());
         return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
     }
 
     @PostMapping("/getcode")
-    private ResponseEntity<?> getVerifyCode(@RequestBody @Valid OTPRequest request) {
+    public ResponseEntity<?> getVerifyCode(@RequestBody @Valid OTPRequest request) {
         String result = authService.getVerifyCode(request);
         return ResponseEntity.ok(Map.of("message", result));
     }
 
     @PostMapping("/login/email")
-    private ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
+    public ResponseEntity<?> loginWithEmail(@RequestBody @Valid LoginWithEmailRequest request) {
         AuthResponse result = authService.loginWithEmail(request);
         return ResponseEntity.ok(Map.of("token", result.token(), "role", result.role()));
     }
 
     @PostMapping("/login/admin")
-    private ResponseEntity<?> adminlogin(@RequestBody @Valid LoginWithEmailRequest request) {
+    public ResponseEntity<?> adminlogin(@RequestBody @Valid LoginWithEmailRequest request) {
         AuthResponse result = authService.adminlogin(request);
         return ResponseEntity.ok(Map.of("token", result.token()));
     }
 
     @GetMapping("/count")
-    private ResponseEntity<String> count() {
+    public ResponseEntity<String> count() {
         String count = authService.getCount();
         return ResponseEntity.ok(count);
+    }
+
+    @PostMapping("/forgot/password")
+    public ResponseEntity<?> forgotPassword(@RequestBody String email) {
+        String result = authService.forgotPassword(email);
+        return ResponseEntity.ok(Map.of("message", result));
+    }
+
+    @PostMapping("/rest/password")
+    public ResponseEntity<?> restPassword(@RequestBody String password, @RequestHeader("Authorization") String token) {
+        String response = authService.resetPassword(password, token.substring(7));
+        return ResponseEntity.ok(Map.of("message", response));
     }
 }
