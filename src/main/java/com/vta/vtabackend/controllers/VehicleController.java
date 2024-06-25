@@ -1,8 +1,8 @@
 package com.vta.vtabackend.controllers;
 
-import com.vta.vtabackend.documents.Token;
 import com.vta.vtabackend.documents.Vehicle;
 import com.vta.vtabackend.dto.CreateVehicleRequest;
+import com.vta.vtabackend.dto.VehicleAvailableRequest;
 import com.vta.vtabackend.services.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +51,10 @@ public class VehicleController {
         token=token.substring(7);
         String response = vehicleService.deleteVehicle(vehicleId,token);
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/available")
+    public List<Vehicle> getAvailableVehicles(@RequestBody VehicleAvailableRequest request
+                                              ) {
+        return vehicleService.findAvailableVehicles(request);
     }
 }

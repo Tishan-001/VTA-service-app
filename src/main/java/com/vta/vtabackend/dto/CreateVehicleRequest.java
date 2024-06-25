@@ -11,6 +11,7 @@ public record CreateVehicleRequest(
         @NotNull VehicleCategory vehicleCategory,
         @NotNull String photo,
         @NotNull Double price,
-        @NotNull List<String> features
+        @NotNull List<String> features,
+        @NotNull String location
         ) {
 }

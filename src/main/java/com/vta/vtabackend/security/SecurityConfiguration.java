@@ -63,6 +63,7 @@ public class SecurityConfiguration {
             "/vehicle/add",
             "/vehicle/update",
             "/vehicle/delete",
+            "/vehicle/available",
             "/images/upload",
             "/booking/create",
             "/hotel-booking/create",
