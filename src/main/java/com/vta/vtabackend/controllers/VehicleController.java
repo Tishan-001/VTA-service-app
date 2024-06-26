@@ -52,7 +52,7 @@ public class VehicleController {
         String response = vehicleService.deleteVehicle(vehicleId,token);
         return ResponseEntity.ok(response);
     }
-    @GetMapping("/available")
+    @PostMapping("/available")
     public List<Vehicle> getAvailableVehicles(@RequestBody VehicleAvailableRequest request
                                               ) {
         return vehicleService.findAvailableVehicles(request);
