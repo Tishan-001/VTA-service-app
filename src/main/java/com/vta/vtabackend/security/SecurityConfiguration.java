@@ -104,6 +104,7 @@ public class SecurityConfiguration {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);  // Allow cookies and other credentials
         config.addAllowedOrigin("https://vtasrilankaweb.netlify.app");  // Allow specific origin
+        config.addAllowedOriginPattern("https://vtarilankaweb.vercel.app");
         config.addAllowedHeader("*");  // Allow all headers
         config.addAllowedMethod("*");  // Allow all HTTP methods
         source.registerCorsConfiguration("/**", config);
