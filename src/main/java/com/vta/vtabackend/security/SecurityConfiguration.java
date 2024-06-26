@@ -103,7 +103,7 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);  // Allow cookies and other credentials
-        config.addAllowedOrigin("http://localhost:3000");  // Allow specific origin
+        config.addAllowedOrigin("https://vtasrilankaweb.netlify.app");  // Allow specific origin
         config.addAllowedHeader("*");  // Allow all headers
         config.addAllowedMethod("*");  // Allow all HTTP methods
         source.registerCorsConfiguration("/**", config);
