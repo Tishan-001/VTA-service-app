@@ -25,14 +25,15 @@ public class VehicleService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
     private final VehicleRepository vehicleRepository;
-    private TransportBookingRepository transportBookingRepository;
+    private final TransportBookingRepository transportBookingRepository;
 
     @Autowired
-    public VehicleService(TransportRepository transportRepository, UserRepository userRepository, TokenService tokenService, VehicleRepository vehicleRepository) {
+    public VehicleService(TransportRepository transportRepository, UserRepository userRepository, TokenService tokenService, VehicleRepository vehicleRepository, TransportBookingRepository transportBookingRepository) {
         this.transportRepository = transportRepository;
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.vehicleRepository = vehicleRepository;
+        this.transportBookingRepository = transportBookingRepository;
     }
 
     public List<Vehicle> getAllVehicles() {
@@ -58,7 +59,7 @@ public class VehicleService {
                     request.photo(),
                     request.price(),
                     request.features(),
-                   request.location()
+                    request.location()
             );
             vehicleRepository.save(newVehicle);
             return "Vehicle added successfully!";
@@ -118,13 +119,11 @@ public class VehicleService {
 
     public List<Vehicle> findAvailableVehicles(VehicleAvailableRequest request) {
         List<Vehicle> vehicles = vehicleRepository.findVehiclesByCategoryAndLocation(request.category(), request.location());
-        return vehicles;
-//        return vehicles.stream()
-//                .filter(vehicle -> {
-//                    System.out.println("vehicle: "+vehicle);
-//                    List<TransportBooking> bookings = transportBookingRepository.findBookedVehicles(vehicle.getId(), request.bookingStartDate(), request.bookingEndDate());
-//                    return bookings.isEmpty();
-//                })
-//                .collect(Collectors.toList());
+        return vehicles.stream()
+                .filter(vehicle -> {
+                    List<TransportBooking> bookings = transportBookingRepository.findBookedVehicles(vehicle.getId(), request.bookingStartDate(), request.bookingEndDate());
+                    return bookings.isEmpty();
+                })
+                .collect(Collectors.toList());
     }
 }
