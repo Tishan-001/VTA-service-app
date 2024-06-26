@@ -13,5 +13,4 @@ public interface TransportBookingRepository extends MongoRepository<TransportBoo
     Optional<List<TransportBooking>> getByServiceProviderId(String id);
     Optional<List<TransportBooking>> getByUserId(String id);
     @Query("{ 'vehicleId': ?0, $or: [ { 'bookingStartDate': { $lte: ?2 }, 'bookingEndDate': { $gte: ?1 } }, { 'bookingStartDate': { $gte: ?1, $lte: ?2 } }, { 'bookingEndDate': { $gte: ?1, $lte: ?2 } } ] }")
-    List<TransportBooking> findBookedVehicles(String vehicleId, String bookingStartDate, String bookingEndDate);
-}
+    List<TransportBooking> findBookedVehicles(String vehicleId, String bookingStartDate, String bookingEndDate);}

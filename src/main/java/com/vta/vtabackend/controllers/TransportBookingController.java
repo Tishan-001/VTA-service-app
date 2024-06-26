@@ -23,7 +23,6 @@ public class TransportBookingController {
 
     @GetMapping("/get-bookings-service")
     public ResponseEntity<?> getBookingsByService(@RequestHeader ("Authorization") String token){
-        System.out.println("Token is :"+token);
         if(token != null && !token.isEmpty()){
             token = token.substring(7);
             return ResponseEntity.ok(transportBookingService.getBookingsService(token));

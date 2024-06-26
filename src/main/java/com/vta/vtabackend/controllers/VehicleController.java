@@ -53,8 +53,7 @@ public class VehicleController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/available")
-    public List<Vehicle> getAvailableVehicles(@RequestBody VehicleAvailableRequest request
-                                              ) {
+    public List<Vehicle> getAvailableVehicles(@RequestBody VehicleAvailableRequest request) {
         return vehicleService.findAvailableVehicles(request);
     }
 }
