@@ -6,5 +6,5 @@ public enum VehicleCategory {
     VAN,
     BIKE,
     JEEP,
-    BUS,
+
 }
